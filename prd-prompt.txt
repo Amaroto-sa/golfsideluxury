@@ -1,0 +1,423 @@
+Build a production-ready **hotel website + hotel management system** for **Golfside Luxury Hotel**.
+
+## PRIMARY GOAL
+Create a premium, scalable hotel platform with:
+1. a luxury customer-facing website
+2. a protected admin/dashboard for hotel operations
+3. all public business content managed from admin/settings, not hardcoded in components
+
+---
+
+## EXECUTION / ENVIRONMENT RULES (CRITICAL)
+- This project is intended for **cloud deployment on Vercel**, not for running on a local machine.
+- **Do NOT run shell commands**, terminal commands, package installation commands, local dev server commands, database migration commands, or OS-level commands on any local computer.
+- **Do NOT assume local machine access**.
+- **Do NOT output instructions like** `npm install`, `pnpm dev`, `npx prisma migrate`, `brew`, `apt`, `docker`, or anything that requires local terminal execution.
+- Build and present the solution as a **cloud-ready codebase architecture** only.
+- If setup/config is needed, provide it as:
+  - required files
+  - project structure
+  - `.env.example`
+  - deployment notes for Vercel
+  - Prisma schema
+  - configuration guidance
+- Assume dependencies will be handled separately in the cloud/project environment.
+- Focus on **code structure, architecture, components, schema, routes, validation, and deployable design**, not local machine execution.
+
+---
+
+## VERY IMPORTANT RULES
+- **Do NOT hardcode business data into UI components.**
+- **Do NOT hardcode credentials, secrets, SMTP config, auth secrets, API tokens, DB URLs, or admin login details.**
+- All secrets/config must come from **.env**.
+- All public hotel content must be **database-driven** and editable from **admin/settings**.
+- This app will be deployed on **Vercel**.
+- Use a **managed PostgreSQL** database.
+- Build with **clean architecture**, **strong TypeScript**, **proper validation**, and **production-safe patterns**.
+- Keep the codebase scalable, maintainable, and easy for **non-technical hotel staff** to manage.
+- Use a **premium luxury-hotel design**.
+- The attached hotel mockup image is the **visual design reference only**.
+  - Recreate its **design direction**, **dark premium theme**, **gold accents**, **luxury layout quality**, **hero style**, **room card style**, **gallery feel**, and **polished hotel UI mood**
+  - **Ignore all sample text/content shown in the reference**
+  - Replace everything with Golfside Luxury Hotel data from this brief
+
+---
+
+## PACKAGE SCOPE
+This is the **STANDARD PACKAGE**.
+
+Include:
+- public hotel website
+- room listing and pricing
+- booking / reservation flow
+- contact / inquiry flow
+- admin dashboard
+- booking management
+- room management
+- room availability management
+- guest management
+- inquiry visibility in dashboard
+- dashboard notifications for bookings and inquiries
+- admin-editable public content/settings
+
+---
+
+## TECH STACK (PRO LEVEL)
+### Frontend
+- Next.js (App Router)
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Framer Motion
+- React Hook Form
+- Zod
+
+### Backend
+- Next.js server actions and/or API routes
+- Node.js runtime
+- Prisma ORM
+
+### Database
+- PostgreSQL (managed)
+
+### Authentication
+- Auth.js / NextAuth
+- secure admin auth
+- role-based access control
+
+### Media
+- Support provided/uploaded media
+- Keep architecture ready for future Cloudinary or external media storage if needed
+
+### Notifications
+- dashboard notifications for inquiries and bookings
+- email integration should be configurable via .env
+- keep notification architecture modular so Telegram can be added later
+
+### Deployment
+- Vercel
+- managed PostgreSQL
+- custom domain support later
+- production-ready setup
+
+---
+
+## BUSINESS DATA PROVIDED
+### Hotel Name
+Golfside Luxury Hotel
+
+### Address
+3, Are Odesa T.G Drive,  
+Off 74 Road,  
+By Ibori Golf Course,  
+Asaba, Delta State
+
+### Phone Number
+09151933333
+
+### Social
+TikTok: @golfsideluxuryasaba
+
+### Hotel Description
+Use this source content but polish it professionally for the site:
+
+“Golfside Luxury Hotel offers a welcoming atmosphere, blending comfort with convenience for every guest. The rooms are thoughtfully designed to provide a cozy space and refreshing relaxation spot. Our amenities cater for both leisure and business travelers. Guests can enjoy excellent dining, friendly service, and easy access to local attractions. Whether you intend to stay for a night, a week, or more, we aim to make your visit enjoyable and memorable.”
+
+### Room Categories / Prices / Room Numbers
+Standard — ₦25,000  
+Rooms: 102, 204, 202, 104, 109
+
+Classic — ₦30,000  
+Rooms: 103, 101, 110, 108, 107, 105
+
+Deluxe — ₦35,000  
+Rooms: 205, 207, 206, 212, 211, 111, 106, 203, 209, 208
+
+Executive — ₦40,000  
+Rooms: 201, 100
+
+Diplomat — ₦45,000  
+Rooms: 210, 200
+
+### Amenities
+- Wi-Fi
+- AC
+- Power
+- Security
+- Restaurant
+- Parking
+
+### Check-in / Check-out
+- Check-in: 05:00 AM
+- Check-out: 12:00 Noon
+
+### Booking / Payment Policy
+- Full payment to log booking
+- Half payment for reservation
+- For contact, guests should call the hotel phone number
+
+### Rules
+- No smoking in rooms
+- Only two adults in a room at a time
+
+### Media
+Use the real hotel images/logo provided by the client.
+
+---
+
+## DESIGN REQUIREMENTS
+Style must be:
+- premium
+- elegant
+- luxury-hotel aesthetic
+- dark polished background
+- gold accent color system
+- trust-building and high-end
+- mobile-first responsive
+- smooth but restrained animation
+- modern and fast like a premium web app
+
+Use:
+- large luxury hero
+- polished room cards
+- premium content blocks
+- elegant gallery presentation
+- refined typography
+- clean admin UI that still visually matches the brand quality
+
+---
+
+## PUBLIC WEBSITE REQUIREMENTS
+### 1. Homepage
+Include:
+- hero section
+- logo / hotel branding
+- polished intro/about
+- CTA buttons
+- featured room categories
+- amenities preview
+- gallery preview
+- contact block
+- social proof / trust presentation
+
+### 2. Rooms Page / Rooms Section
+Include:
+- room category cards
+- price display
+- room imagery
+- room details
+- clean luxury presentation
+- availability-aware logic if possible
+
+### 3. Booking / Reservation Flow
+Guest should be able to:
+- choose room category
+- optionally choose room if available
+- select booking type:
+  - reservation
+  - full booking
+- enter guest details
+- submit booking/reservation request
+
+System must reflect policy:
+- full payment for full booking
+- half payment for reservation
+
+### 4. Contact / Inquiry
+Include:
+- contact form
+- call CTA
+- address
+- inquiry submission stored in DB
+- inquiry visible in dashboard
+
+### 5. Rules / Policy Section
+Display:
+- booking/payment policy
+- no smoking rule
+- two-adult rule
+- check-in/check-out time
+
+### 6. Gallery
+- premium layout
+- responsive
+- DB/media-driven
+- not hardcoded in components
+
+---
+
+## ADMIN DASHBOARD REQUIREMENTS
+Admin must be able to:
+
+### 1. Dashboard Overview
+- total bookings
+- pending reservations
+- confirmed bookings
+- occupied rooms
+- available rooms
+- recent inquiries
+- recent activity
+- high-level hotel summary
+
+### 2. Booking Management
+- view bookings
+- approve/reject bookings
+- track reservation vs full booking
+- track payment status
+- assign booking status
+- connect each booking to room and guest
+- prevent room clashes
+
+### 3. Room Management
+- create/edit/delete room categories
+- create/edit/delete room numbers
+- mark rooms as available / occupied / maintenance
+- see exactly which rooms are booked
+
+### 4. Guest Management
+- guest records
+- contact details
+- stay details
+- booking history
+
+### 5. Inquiry Management
+- view contact form submissions
+- notification badge/count
+- status handling if needed
+
+### 6. Public Site Content Management (CRITICAL)
+Admin/settings must be able to update:
+- hotel name
+- logo
+- favicon / brand assets
+- about text
+- phone number
+- email
+- address
+- check-in/check-out time
+- amenities
+- booking policy
+- rules
+- social links
+- homepage content
+- gallery/media
+- room prices
+- room categories
+- room numbers
+
+**Nothing above should be hardcoded in page components.**
+All must come from DB/settings and be manageable from admin/dashboard.
+
+---
+
+## DATABASE / DATA MODEL DIRECTION
+Design clean models/tables around:
+- AdminUser
+- Role
+- HotelProfile / HotelSettings
+- SocialLink
+- RoomCategory
+- Room
+- Booking
+- Guest
+- Inquiry
+- GalleryImage
+- Amenity
+- Rule / Policy
+- Notification
+
+Requirements:
+- room categories, room numbers, and prices must be database-driven
+- hotel profile/settings must be database-driven
+- content/settings architecture must support editing from admin
+- design booking models with future payment integration in mind
+
+---
+
+## AUTH / SECURITY
+- secure admin login
+- hashed passwords
+- proper sessions
+- protected admin routes
+- safe server-side validation
+- input sanitization
+- safe error handling
+- never expose secrets to client
+- use .env for all sensitive configuration
+
+---
+
+## FORMS / VALIDATION
+Use React Hook Form + Zod for:
+- booking forms
+- inquiry forms
+- admin content/settings forms
+- room management forms
+- guest forms
+
+---
+
+## ENGINEERING STANDARDS
+- modular folder structure
+- clean separation of UI, business logic, and data access
+- strong TypeScript usage
+- reusable components
+- reusable services/actions
+- no duplicated messy logic
+- proper loading/error states
+- responsive UI on all pages
+- admin UX simple enough for non-technical staff
+
+---
+
+## NOTIFICATIONS
+For current version:
+- booking submissions should create dashboard notifications
+- inquiry submissions should create dashboard notifications
+
+Keep architecture ready for future support of:
+- email notifications
+- Telegram alerts
+- payment-triggered status updates
+
+---
+
+## PAYMENT INTEGRATION PREPAREDNESS
+Do NOT fully implement online gateway payments now unless explicitly required.
+But structure the data model and booking flow so Paystack / Flutterwave / Stripe can be added later without major rewrite.
+
+---
+
+## DELIVERABLES
+I want:
+1. complete production-ready project structure
+2. public frontend pages
+3. admin dashboard
+4. Prisma schema
+5. database-driven settings/content system
+6. auth setup
+7. booking flow
+8. inquiry/contact flow
+9. room + guest management
+10. admin-editable public data architecture
+11. `.env.example` showing required environment variable names only
+12. clean seed/demo setup for development only
+13. deployment-ready structure for Vercel + managed PostgreSQL
+
+---
+
+## OUTPUT EXPECTATION
+Generate the project professionally.
+Keep it deployable to Vercel.
+Assume managed PostgreSQL.
+Do not hardcode business content in components.
+Use admin-editable settings for public-facing data.
+Make the UI luxury-hotel premium and aligned with the attached design reference.
+Keep the code scalable for future upgrades.
+
+IMPORTANT:
+Any public data that the hotel may want to change later (phone, email, address, room prices, room numbers, rules, amenities, booking policy, social links, logo, favicon, etc.) must come from admin/database/settings — not static hardcoded values inside the frontend.
+
+FINAL INSTRUCTION:
+Do NOT execute or suggest local terminal commands. Do NOT rely on local machine setup. Provide cloud-ready code architecture, files, schemas, components, routes, settings structure, and deployment-oriented implementation only.

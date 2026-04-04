@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hashed password
+  name      String?
+  role      String   @default("ADMIN") // SUPER_ADMIN or ADMIN
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HotelSettings {
+  id              String   @id @default(cuid())
+  hotelName       String   @default("Golfside Luxury Hotel")
+  aboutText       String   @db.Text
+  phoneNumber     String
+  email           String
+  address         String
+  checkInTime     String
+  checkOutTime    String
+  logoUrl              String?
+  logoPublicId         String?   // Cloudinary public_id
+  faviconUrl           String?
+  faviconPublicId      String?   // Cloudinary public_id
+  bookingPolicy        String   @db.Text
+  homepageHero         String?  // Cloudinary URL for hero image
+  homepageHeroPublicId String?  // Cloudinary public_id
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  platform  String   // e.g., "TikTok", "Instagram"
+  url       String
+  icon      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RoomCategory {
+  id          String   @id @default(cuid())
+  name        String   // Standard, Classic, etc.
+  description String?  @db.Text
+  price              Decimal  @db.Decimal(10, 2)
+  coverImage         String?
+  coverImagePublicId String?  // Cloudinary public_id
+  rooms       Room[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Room {
+  id             String       @id @default(cuid())
+  roomNumber     String       @unique // 102, 204, etc.
+  status         RoomStatus   @default(AVAILABLE)
+  categoryId     String
+  category       RoomCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  bookings       Booking[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+enum RoomStatus {
+  AVAILABLE
+  OCCUPIED
+  MAINTENANCE
+}
+
+model Guest {
+  id          String    @id @default(cuid())
+  firstName   String
+  lastName    String
+  email       String?
+  phoneNumber String
+  address     String?
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  guestId       String
+  guest         Guest         @relation(fields: [guestId], references: [id], onDelete: Restrict)
+  roomId        String?
+  room          Room?         @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  checkIn       DateTime
+  checkOut      DateTime
+  adults        Int           @default(1)
+  status        BookingStatus @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+  totalAmount   Decimal       @db.Decimal(10, 2)
+  amountPaid    Decimal       @default(0) @db.Decimal(10, 2)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PARTIAL     // Reservation (half payment)
+  COMPLETED   // Full booking (full payment)
+  REFUNDED
+}
+
+model Inquiry {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String        @db.Text
+  status    InquiryStatus @default(NEW)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+enum InquiryStatus {
+  NEW
+  READ
+  RESOLVED
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  title     String?
+  url       String
+  publicId  String?  // Cloudinary public_id for server-side delete
+  width     Int?     // Original image width
+  height    Int?     // Original image height
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Amenity {
+  id        String   @id @default(cuid())
+  name      String   // AC, Wi-Fi, etc.
+  icon      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RulePolicy {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @db.Text
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  type      String   // e.g., "BOOKING", "INQUIRY"
+  isRead    Boolean  @default(false)
+  linkUrl   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

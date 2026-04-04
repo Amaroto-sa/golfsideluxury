@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 98%;
+    --foreground: 220 20% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 10%;
+
+    --primary: 43 74% 49%; /* Luxury Gold Base */
+    --primary-foreground: 220 20% 10%;
+
+    --secondary: 220 20% 90%;
+    --secondary-foreground: 220 20% 10%;
+
+    --muted: 220 20% 90%;
+    --muted-foreground: 220 20% 40%;
+
+    --accent: 43 74% 49%;
+    --accent-foreground: 220 20% 10%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 20% 90%;
+    --input: 220 20% 90%;
+    --ring: 43 74% 49%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 220 30% 6%; /* Deep polished dark background */
+    --foreground: 210 40% 98%;
+
+    --card: 220 30% 10%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 220 30% 10%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 43 74% 55%; /* Brighter Gold */
+    --primary-foreground: 220 30% 6%;
+
+    --secondary: 220 30% 16%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 220 30% 16%;
+    --muted-foreground: 210 40% 60%;
+
+    --accent: 43 74% 55%;
+    --accent-foreground: 220 30% 6%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 30% 16%;
+    --input: 220 30% 16%;
+    --ring: 43 74% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-primary;
+  }
+  
+  /* Luxury specific typography adjustments */
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-serif;
+  }
+}
