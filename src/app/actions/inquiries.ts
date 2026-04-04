@@ -37,10 +37,46 @@ export async function submitInquiry(formData: FormData) {
         linkUrl: "/admin/inquiries",
     });
 
+    // Send Admin Email Alert (must be awaited directly)
+    try {
+        const { sendInquiryNotificationEmail } = await import("@/lib/email");
+        await sendInquiryNotificationEmail(inquiry);
+    } catch (error) {
+        console.error("Failed to send inquiry email alert:", error);
+    }
+
     revalidatePath("/admin");
     revalidatePath("/admin/inquiries");
 
     return { success: true, inquiryId: inquiry.id };
+}
+
+export async function replyToInquiry(formData: FormData) {
+    const id = formData.get("id") as string;
+    const replyMessage = formData.get("replyMessage") as string;
+
+    if (!id || !replyMessage || replyMessage.length < 5) {
+        return { success: false, error: "Reply message too short" };
+    }
+
+    const inquiry = await prisma.inquiry.findUnique({ where: { id } });
+    if (!inquiry) return { success: false, error: "Inquiry not found" };
+
+    try {
+        const { sendInquiryReplyEmail } = await import("@/lib/email");
+        await sendInquiryReplyEmail(inquiry.email, inquiry.name, replyMessage);
+    } catch (error) {
+        console.error("Failed to send reply email:", error);
+        return { success: false, error: "Failed to dispatch email via SMTP." };
+    }
+
+    await prisma.inquiry.update({
+        where: { id },
+        data: { status: "RESPONDED" as any },
+    });
+
+    revalidatePath("/admin/inquiries");
+    return { success: true };
 }
 
 export async function updateInquiryStatus(id: string, status: string) {

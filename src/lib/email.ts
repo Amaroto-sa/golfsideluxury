@@ -71,3 +71,53 @@ export async function sendBookingNotificationEmail(bookingData: any) {
         html,
     });
 }
+
+export async function sendInquiryNotificationEmail(inquiryData: any) {
+    const notificationEmail = process.env.NOTIFICATION_EMAIL;
+
+    if (!notificationEmail) {
+        console.warn("NOTIFICATION_EMAIL is missing. Admin will not receive alerts for inquiries.");
+        return;
+    }
+
+    const html = `
+        <h2>New Contact Inquiry</h2>
+        <p><strong>Name:</strong> ${inquiryData.name}</p>
+        <p><strong>Email:</strong> ${inquiryData.email}</p>
+        <p><strong>Phone:</strong> ${inquiryData.phone || "Not provided"}</p>
+        <p><strong>Message:</strong></p>
+        <blockquote style="border-left: 4px solid #ccc; padding-left: 10px; color: #555;">
+            ${inquiryData.message}
+        </blockquote>
+        <br/>
+        <p>Login to the admin dashboard to reply.</p>
+    `;
+
+    await sendEmail({
+        to: notificationEmail,
+        subject: `New Inquiry from ${inquiryData.name}`,
+        html,
+    });
+}
+
+export async function sendInquiryReplyEmail(to: string, guestName: string, replyMessage: string) {
+    const html = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #4a5568;">Reply to Your Inquiry</h2>
+            <p>Hello ${guestName},</p>
+            <p>Thank you for reaching out to Golfside Luxury Hotel.</p>
+            <blockquote style="border-left: 4px solid #d4af37; padding-left: 15px; margin-left: 0; color: #333;">
+                ${replyMessage.replace(/\n/g, "<br/>")}
+            </blockquote>
+            <br/>
+            <p>Best regards,</p>
+            <p><strong>Golfside Luxury Hotel Management</strong></p>
+        </div>
+    `;
+
+    await sendEmail({
+        to,
+        subject: "Re: Your Inquiry to Golfside Luxury Hotel",
+        html,
+    });
+}
