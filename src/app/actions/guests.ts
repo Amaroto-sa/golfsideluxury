@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { guestSchema } from "@/lib/validations";
 import { revalidatePath } from "next/cache";
 
-export async function createGuest(formData: FormData) {
+export async function createGuest(formData: FormData): Promise<void> {
     const raw = {
         firstName: formData.get("firstName") as string,
         lastName: formData.get("lastName") as string,
@@ -15,7 +15,7 @@ export async function createGuest(formData: FormData) {
 
     const parsed = guestSchema.safeParse(raw);
     if (!parsed.success) {
-        return { success: false, error: parsed.error.flatten().fieldErrors };
+        return;
     }
 
     await prisma.guest.create({
@@ -25,10 +25,9 @@ export async function createGuest(formData: FormData) {
         },
     });
     revalidatePath("/admin/guests");
-    return { success: true };
 }
 
-export async function updateGuest(id: string, formData: FormData) {
+export async function updateGuest(id: string, formData: FormData): Promise<void> {
     const raw = {
         firstName: formData.get("firstName") as string,
         lastName: formData.get("lastName") as string,
@@ -39,7 +38,7 @@ export async function updateGuest(id: string, formData: FormData) {
 
     const parsed = guestSchema.safeParse(raw);
     if (!parsed.success) {
-        return { success: false, error: parsed.error.flatten().fieldErrors };
+        return;
     }
 
     await prisma.guest.update({
@@ -50,15 +49,13 @@ export async function updateGuest(id: string, formData: FormData) {
         },
     });
     revalidatePath("/admin/guests");
-    return { success: true };
 }
 
-export async function deleteGuest(id: string) {
+export async function deleteGuest(id: string): Promise<void> {
     const bookingCount = await prisma.booking.count({ where: { guestId: id } });
     if (bookingCount > 0) {
-        return { success: false, error: "This guest has booking records. Cannot delete." };
+        return; // Silently refuse — has booking records
     }
     await prisma.guest.delete({ where: { id } });
     revalidatePath("/admin/guests");
-    return { success: true };
 }
