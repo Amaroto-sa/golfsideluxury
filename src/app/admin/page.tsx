@@ -65,7 +65,7 @@ export default async function AdminDashboard() {
             <h2 className="text-2xl font-serif text-primary">Dashboard Overview</h2>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 {statCards.map((stat, i) => (
                     <Card key={i}>
                         <CardContent className="p-5">
