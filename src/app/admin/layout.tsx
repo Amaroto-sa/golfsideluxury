@@ -13,8 +13,11 @@ export default async function AdminLayout({
     children: React.ReactNode;
 }) {
     const session = await getServerSession(authOptions);
+
+    // If no session, just render children (login page will render)
+    // Middleware handles redirecting non-login admin pages
     if (!session) {
-        redirect("/admin/login");
+        return <>{children}</>;
     }
 
     let unreadCount = 0;
