@@ -72,7 +72,7 @@ export async function replyToInquiry(formData: FormData) {
 
     await prisma.inquiry.update({
         where: { id },
-        data: { status: "RESPONDED" as any },
+        data: { status: "RESOLVED" as any },
     });
 
     revalidatePath("/admin/inquiries");
