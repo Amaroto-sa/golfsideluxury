@@ -137,7 +137,8 @@ export default async function HomePage() {
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
                         {categories.length > 0
                             ? categories.map((cat) => (
-                                <div
+                                <Link
+                                    href={`/booking?category=${cat.id}`}
                                     key={cat.id}
                                     className="group cursor-pointer bg-background overflow-hidden hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] transition-all duration-700 pb-8 flex flex-col shadow-lg border border-transparent hover:border-primary/20"
                                 >
@@ -175,7 +176,7 @@ export default async function HomePage() {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))
                             : (
                                 <div className="col-span-full text-center text-muted-foreground py-12">
