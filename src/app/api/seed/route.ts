@@ -12,7 +12,7 @@ export async function GET() {
         const existingAdmin = await prisma.adminUser.findFirst();
         if (existingAdmin) {
             return NextResponse.json({
-                message: "Database already seeded. Admin user exists.",
+                message: "Database already seeded. Admin user exists. To re-seed, delete all data first.",
                 seeded: false,
             });
         }
@@ -48,7 +48,8 @@ export async function GET() {
             },
         });
 
-        // ─── 3. Create Room Categories ───────────────────────────
+        // ─── 3. Create Room Categories (ACCURATE RATES) ──────────
+
         const standard = await prisma.roomCategory.create({
             data: {
                 name: "Standard",
@@ -61,7 +62,23 @@ export async function GET() {
             data: {
                 name: "Classic",
                 description: "Elegant rooms with premium furnishings and enhanced amenities.",
+                price: 30000,
+            },
+        });
+
+        const deluxe = await prisma.roomCategory.create({
+            data: {
+                name: "Deluxe",
+                description: "Spacious rooms with upscale decor, offering a refined experience.",
                 price: 35000,
+            },
+        });
+
+        const executive = await prisma.roomCategory.create({
+            data: {
+                name: "Executive",
+                description: "Premium suites designed for distinguished guests seeking top-tier comfort.",
+                price: 40000,
             },
         });
 
@@ -69,24 +86,40 @@ export async function GET() {
             data: {
                 name: "Diplomat",
                 description: "Our finest suites with exclusive perks, spacious layout and VIP treatment.",
-                price: 50000,
+                price: 45000,
             },
         });
 
-        // ─── 4. Create Rooms ─────────────────────────────────────
-        const roomData = [
-            { roomNumber: "101", categoryId: standard.id },
-            { roomNumber: "102", categoryId: standard.id },
-            { roomNumber: "103", categoryId: standard.id },
-            { roomNumber: "201", categoryId: classic.id },
-            { roomNumber: "202", categoryId: classic.id },
-            { roomNumber: "203", categoryId: classic.id },
-            { roomNumber: "301", categoryId: diplomat.id },
-            { roomNumber: "302", categoryId: diplomat.id },
-        ];
+        // ─── 4. Create Rooms (ACCURATE ROOM NUMBERS) ─────────────
 
-        for (const room of roomData) {
-            await prisma.room.create({ data: room });
+        // Standard ₦25,000 — Rooms: 102, 204, 202, 104, 109
+        const standardRooms = ["102", "204", "202", "104", "109"];
+        for (const num of standardRooms) {
+            await prisma.room.create({ data: { roomNumber: num, categoryId: standard.id } });
+        }
+
+        // Classic ₦30,000 — Rooms: 103, 101, 110, 108, 107, 105
+        const classicRooms = ["103", "101", "110", "108", "107", "105"];
+        for (const num of classicRooms) {
+            await prisma.room.create({ data: { roomNumber: num, categoryId: classic.id } });
+        }
+
+        // Deluxe ₦35,000 — Rooms: 205, 207, 206, 212, 211, 111, 106, 203, 209, 208
+        const deluxeRooms = ["205", "207", "206", "212", "211", "111", "106", "203", "209", "208"];
+        for (const num of deluxeRooms) {
+            await prisma.room.create({ data: { roomNumber: num, categoryId: deluxe.id } });
+        }
+
+        // Executive ₦40,000 — Rooms: 201, 100
+        const executiveRooms = ["201", "100"];
+        for (const num of executiveRooms) {
+            await prisma.room.create({ data: { roomNumber: num, categoryId: executive.id } });
+        }
+
+        // Diplomat ₦45,000 — Rooms: 210, 200
+        const diplomatRooms = ["210", "200"];
+        for (const num of diplomatRooms) {
+            await prisma.room.create({ data: { roomNumber: num, categoryId: diplomat.id } });
         }
 
         // ─── 5. Create Amenities ─────────────────────────────────
@@ -124,12 +157,20 @@ export async function GET() {
             },
         });
 
+        const totalRooms = standardRooms.length + classicRooms.length + deluxeRooms.length + executiveRooms.length + diplomatRooms.length;
+
         return NextResponse.json({
             message: "✅ Database seeded successfully!",
             seeded: true,
             admin: { email: adminEmail },
-            rooms: roomData.length,
-            categories: 3,
+            totalRooms,
+            categories: {
+                Standard: { price: 25000, rooms: standardRooms },
+                Classic: { price: 30000, rooms: classicRooms },
+                Deluxe: { price: 35000, rooms: deluxeRooms },
+                Executive: { price: 40000, rooms: executiveRooms },
+                Diplomat: { price: 45000, rooms: diplomatRooms },
+            },
         });
     } catch (error: any) {
         console.error("Seed error:", error);

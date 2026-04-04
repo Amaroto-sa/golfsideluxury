@@ -6,136 +6,135 @@ const prisma = new PrismaClient();
 async function main() {
     console.log("🌱 Seeding database...");
 
-    // ─── Admin User ────────────────────────────────────────────────
-    const adminPassword = await hash(process.env.ADMIN_PASSWORD || "admin123", 12);
+    // ─── 1. Admin User ────────────────────────────────────────
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@golfsideluxury.com";
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+    const hashedPassword = await hash(adminPassword, 12);
+
     await prisma.adminUser.upsert({
-        where: { email: process.env.ADMIN_EMAIL || "admin@golfsideluxury.com" },
+        where: { email: adminEmail },
         update: {},
         create: {
-            email: process.env.ADMIN_EMAIL || "admin@golfsideluxury.com",
-            password: adminPassword,
-            name: "Hotel Admin",
+            email: adminEmail,
+            password: hashedPassword,
+            name: "Super Admin",
             role: "SUPER_ADMIN",
         },
     });
     console.log("✅ Admin user created");
 
-    // ─── Hotel Settings ────────────────────────────────────────────
+    // ─── 2. Hotel Settings ────────────────────────────────────
     const existingSettings = await prisma.hotelSettings.findFirst();
     if (!existingSettings) {
         await prisma.hotelSettings.create({
             data: {
                 hotelName: "Golfside Luxury Hotel",
                 aboutText:
-                    "Golfside Luxury Hotel offers a welcoming atmosphere, blending comfort with convenience for every guest. The rooms are thoughtfully designed to provide a cozy space and refreshing relaxation spot. Our amenities cater for both leisure and business travelers. Guests can enjoy excellent dining, friendly service, and easy access to local attractions. Whether you intend to stay for a night, a week, or more, we aim to make your visit enjoyable and memorable.",
+                    "Golfside Luxury Hotel offers a welcoming atmosphere with thoughtfully designed rooms for both business and leisure travelers. Located by the Ibori Golf Course in the heart of Asaba, our hotel combines modern comfort with warm Nigerian hospitality.",
                 phoneNumber: "09151933333",
                 email: "info@golfsideluxury.com",
-                address: "3, Are Odesa T.G Drive, Off 74 Road, By Ibori Golf Course, Asaba, Delta State",
+                address:
+                    "3, Are Odesa T.G Drive, Off 74 Road, By Ibori Golf Course, Asaba, Delta State",
                 checkInTime: "05:00 AM",
                 checkOutTime: "12:00 Noon",
                 bookingPolicy:
-                    "Full payment is required to log a booking. Half payment is required for a reservation. For contact, guests should call the hotel phone number.",
+                    "Full payment to log booking. Half payment for reservation. Payment confirms your booking.",
             },
         });
         console.log("✅ Hotel settings created");
     }
 
-    // ─── Room Categories ───────────────────────────────────────────
-    const categoryData = [
-        { name: "Standard", price: 25000, description: "Comfortable and cozy standard room offering essential amenities for a restful stay." },
-        { name: "Classic", price: 30000, description: "Elevated comfort and timeless style with refined furnishings and a welcoming ambience." },
-        { name: "Deluxe", price: 35000, description: "Premium luxury for the discerning guest, featuring spacious interiors and upscale amenities." },
-        { name: "Executive", price: 40000, description: "Sophisticated and elegant executive suite designed for business and leisure excellence." },
-        { name: "Diplomat", price: 45000, description: "Our finest offering — an exclusive diplomat suite with the pinnacle of luxury and service." },
-    ];
+    // ─── 3. Room Categories (ACCURATE RATES) ──────────────────
 
-    for (const cat of categoryData) {
-        const existing = await prisma.roomCategory.findFirst({ where: { name: cat.name } });
-        if (!existing) {
-            await prisma.roomCategory.create({ data: cat });
-        }
-    }
+    const standard = await prisma.roomCategory.create({
+        data: { name: "Standard", description: "Comfortable and well-appointed rooms for an affordable luxury stay.", price: 25000 },
+    });
+
+    const classic = await prisma.roomCategory.create({
+        data: { name: "Classic", description: "Elegant rooms with premium furnishings and enhanced amenities.", price: 30000 },
+    });
+
+    const deluxe = await prisma.roomCategory.create({
+        data: { name: "Deluxe", description: "Spacious rooms with upscale decor, offering a refined experience.", price: 35000 },
+    });
+
+    const executive = await prisma.roomCategory.create({
+        data: { name: "Executive", description: "Premium suites designed for distinguished guests seeking top-tier comfort.", price: 40000 },
+    });
+
+    const diplomat = await prisma.roomCategory.create({
+        data: { name: "Diplomat", description: "Our finest suites with exclusive perks, spacious layout and VIP treatment.", price: 45000 },
+    });
+
     console.log("✅ Room categories created");
 
-    // ─── Rooms ─────────────────────────────────────────────────────
-    const roomAssignments: Record<string, string[]> = {
-        Standard: ["102", "204", "202", "104", "109"],
-        Classic: ["103", "101", "110", "108", "107", "105"],
-        Deluxe: ["205", "207", "206", "212", "211", "111", "106", "203", "209", "208"],
-        Executive: ["201", "100"],
-        Diplomat: ["210", "200"],
-    };
+    // ─── 4. Rooms (ACCURATE ROOM NUMBERS) ─────────────────────
 
-    for (const [catName, roomNumbers] of Object.entries(roomAssignments)) {
-        const category = await prisma.roomCategory.findFirst({ where: { name: catName } });
-        if (category) {
-            for (const roomNumber of roomNumbers) {
-                const existing = await prisma.room.findUnique({ where: { roomNumber } });
-                if (!existing) {
-                    await prisma.room.create({
-                        data: {
-                            roomNumber,
-                            categoryId: category.id,
-                            status: "AVAILABLE",
-                        },
-                    });
-                }
-            }
-        }
+    // Standard ₦25,000
+    for (const num of ["102", "204", "202", "104", "109"]) {
+        await prisma.room.create({ data: { roomNumber: num, categoryId: standard.id } });
     }
-    console.log("✅ Rooms created");
 
-    // ─── Amenities ─────────────────────────────────────────────────
-    const amenityData = [
+    // Classic ₦30,000
+    for (const num of ["103", "101", "110", "108", "107", "105"]) {
+        await prisma.room.create({ data: { roomNumber: num, categoryId: classic.id } });
+    }
+
+    // Deluxe ₦35,000
+    for (const num of ["205", "207", "206", "212", "211", "111", "106", "203", "209", "208"]) {
+        await prisma.room.create({ data: { roomNumber: num, categoryId: deluxe.id } });
+    }
+
+    // Executive ₦40,000
+    for (const num of ["201", "100"]) {
+        await prisma.room.create({ data: { roomNumber: num, categoryId: executive.id } });
+    }
+
+    // Diplomat ₦45,000
+    for (const num of ["210", "200"]) {
+        await prisma.room.create({ data: { roomNumber: num, categoryId: diplomat.id } });
+    }
+
+    console.log("✅ 25 rooms created");
+
+    // ─── 5. Amenities ─────────────────────────────────────────
+    const amenities = [
         { name: "Wi-Fi", icon: "📶" },
         { name: "AC", icon: "❄️" },
-        { name: "Power", icon: "⚡" },
+        { name: "Power (24/7)", icon: "⚡" },
         { name: "Security", icon: "🛡️" },
         { name: "Restaurant", icon: "🍽️" },
         { name: "Parking", icon: "🅿️" },
     ];
-
-    for (const amenity of amenityData) {
-        const existing = await prisma.amenity.findFirst({ where: { name: amenity.name } });
-        if (!existing) {
-            await prisma.amenity.create({ data: amenity });
-        }
+    for (const a of amenities) {
+        await prisma.amenity.create({ data: a });
     }
     console.log("✅ Amenities created");
 
-    // ─── Rules ─────────────────────────────────────────────────────
-    const ruleData = [
-        { title: "No Smoking", content: "Smoking is strictly prohibited inside all hotel rooms.", order: 1 },
-        { title: "Room Occupancy", content: "Only two adults are allowed in a room at any time.", order: 2 },
+    // ─── 6. Rules & Policies ──────────────────────────────────
+    const rules = [
+        { title: "No Smoking", content: "Smoking is strictly prohibited inside all hotel rooms and common areas.", order: 1 },
+        { title: "Occupancy", content: "Only two adults are allowed in a room at any time.", order: 2 },
+        { title: "Pets", content: "No pets are allowed on the hotel premises.", order: 3 },
+        { title: "Quiet Hours", content: "Please maintain quiet between 10 PM and 6 AM.", order: 4 },
     ];
-
-    for (const rule of ruleData) {
-        const existing = await prisma.rulePolicy.findFirst({ where: { title: rule.title } });
-        if (!existing) {
-            await prisma.rulePolicy.create({ data: rule });
-        }
+    for (const r of rules) {
+        await prisma.rulePolicy.create({ data: r });
     }
     console.log("✅ Rules created");
 
-    // ─── Social Links ──────────────────────────────────────────────
-    const socialData = [
-        { platform: "TikTok", url: "https://www.tiktok.com/@golfsideluxuryasaba" },
-    ];
-
-    for (const social of socialData) {
-        const existing = await prisma.socialLink.findFirst({ where: { platform: social.platform } });
-        if (!existing) {
-            await prisma.socialLink.create({ data: social });
-        }
-    }
+    // ─── 7. Social Links ──────────────────────────────────────
+    await prisma.socialLink.create({
+        data: { platform: "TikTok", url: "https://tiktok.com/@golfsideluxuryasaba", icon: "🎵" },
+    });
     console.log("✅ Social links created");
 
-    console.log("\n🎉 Seeding complete!");
+    console.log("\n🎉 Seed complete! 25 rooms across 5 categories.");
 }
 
 main()
     .catch((e) => {
-        console.error("❌ Seed error:", e);
+        console.error("❌ Seed failed:", e);
         process.exit(1);
     })
     .finally(async () => {
