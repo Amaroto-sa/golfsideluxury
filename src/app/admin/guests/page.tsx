@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DeleteButton } from "@/components/admin/delete-button";
 
 export const dynamic = "force-dynamic";
 
@@ -86,9 +87,7 @@ export default async function GuestsPage() {
                                             }
                                         </TableCell>
                                         <TableCell>
-                                            <form action={async () => { "use server"; await deleteGuest(g.id); }}>
-                                                <Button size="sm" variant="destructive" type="submit">Delete</Button>
-                                            </form>
+                                            <DeleteButton action={deleteGuest.bind(null, g.id)} itemType="Guest" />
                                         </TableCell>
                                     </TableRow>
                                 ))}

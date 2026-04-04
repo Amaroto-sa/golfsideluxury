@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { RoomsClient } from "@/components/admin/rooms-client";
+import { DeleteButton } from "@/components/admin/delete-button";
 
 export const dynamic = "force-dynamic";
 
@@ -78,9 +79,7 @@ export default async function RoomsPage() {
                                             )}
                                         </TableCell>
                                         <TableCell>
-                                            <form action={async () => { "use server"; await deleteRoomCategory(c.id); }}>
-                                                <Button size="sm" variant="destructive" type="submit">Delete</Button>
-                                            </form>
+                                            <DeleteButton action={deleteRoomCategory.bind(null, c.id)} itemType="Category" />
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -163,9 +162,7 @@ export default async function RoomsPage() {
                                                         <Button size="sm" variant="secondary" type="submit">Maintenance</Button>
                                                     </form>
                                                 )}
-                                                <form action={async () => { "use server"; await deleteRoom(r.id); }}>
-                                                    <Button size="sm" variant="destructive" type="submit">Delete</Button>
-                                                </form>
+                                                <DeleteButton action={deleteRoom.bind(null, r.id)} itemType="Room" />
                                             </div>
                                         </TableCell>
                                     </TableRow>

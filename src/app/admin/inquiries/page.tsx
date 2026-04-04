@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DeleteButton } from "@/components/admin/delete-button";
 
 export const dynamic = "force-dynamic";
 
@@ -65,9 +66,7 @@ export default async function InquiriesPage() {
                                                         <Button size="sm" variant="default" type="submit">Resolve</Button>
                                                     </form>
                                                 )}
-                                                <form action={async () => { "use server"; await deleteInquiry(inq.id); }}>
-                                                    <Button size="sm" variant="destructive" type="submit">Delete</Button>
-                                                </form>
+                                                <DeleteButton action={deleteInquiry.bind(null, inq.id)} itemType="Inquiry" />
                                             </div>
                                         </TableCell>
                                     </TableRow>

@@ -7,6 +7,8 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { getUnreadNotificationCount } from "@/lib/notifications";
 
+import { LayoutDashboard, CalendarDays, BedDouble, Users, MessageSquare, Bell, Settings, ExternalLink, LogOut } from "lucide-react";
+
 export default async function AdminLayout({
     children,
 }: {
@@ -26,12 +28,12 @@ export default async function AdminLayout({
     } catch { }
 
     const navItems = [
-        { href: "/admin", label: "Dashboard", icon: "📊" },
-        { href: "/admin/bookings", label: "Bookings", icon: "📋" },
-        { href: "/admin/rooms", label: "Rooms", icon: "🏨" },
-        { href: "/admin/guests", label: "Guests", icon: "👥" },
-        { href: "/admin/inquiries", label: "Inquiries", icon: "💬" },
-        { href: "/admin/notifications", label: `Notifications${unreadCount > 0 ? ` (${unreadCount})` : ""}`, icon: "🔔" },
+        { href: "/admin", label: "Dashboard", Icon: LayoutDashboard },
+        { href: "/admin/bookings", label: "Bookings", Icon: CalendarDays },
+        { href: "/admin/rooms", label: "Rooms", Icon: BedDouble },
+        { href: "/admin/guests", label: "Guests", Icon: Users },
+        { href: "/admin/inquiries", label: "Inquiries", Icon: MessageSquare },
+        { href: "/admin/notifications", label: `Notifications${unreadCount > 0 ? ` (${unreadCount})` : ""}`, Icon: Bell },
     ];
 
     return (
@@ -42,22 +44,22 @@ export default async function AdminLayout({
                     <Link href="/admin">
                         <h2 className="font-serif text-xl text-primary font-bold">Golfside Admin</h2>
                     </Link>
-                    <p className="text-xs text-muted-foreground mt-1">{session.user.email}</p>
+                    <p className="text-xs text-muted-foreground mt-1 truncate">{session.user.email}</p>
                 </div>
-                <nav className="flex-1 p-4 space-y-1">
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                     {navItems.map((item) => (
                         <Link key={item.href} href={item.href}>
-                            <div className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm hover:bg-accent/10 hover:text-primary transition-colors">
-                                <span>{item.icon}</span>
-                                <span>{item.label}</span>
+                            <div className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm hover:bg-accent/10 hover:text-primary transition-colors group">
+                                <item.Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
+                                <span className="font-medium">{item.label}</span>
                             </div>
                         </Link>
                     ))}
                     <div className="pt-4 mt-4 border-t border-border">
                         <Link href="/admin/settings">
-                            <div className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm hover:bg-accent/10 text-primary transition-colors font-medium">
-                                <span>⚙️</span>
-                                <span>Site Settings</span>
+                            <div className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm hover:bg-accent/10 hover:text-primary transition-colors group">
+                                <Settings className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
+                                <span className="font-medium">Site Settings</span>
                             </div>
                         </Link>
                     </div>
