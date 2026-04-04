@@ -1,9 +1,10 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getHotelSettings, getSocialLinks } from "@/lib/data-fetchers";
 import { WhatsAppWidget } from "@/components/whatsapp-widget";
-import { Instagram, Facebook, Phone, Mail, MapPin } from "lucide-react";
+import { Instagram, Facebook, Phone, Mail, MapPin, Menu, X } from "lucide-react";
 
 /** Simple helper to render TikTok logo since Lucide-React doesn't have it natively */
 const TikTokIcon = () => (
@@ -12,9 +13,18 @@ const TikTokIcon = () => (
     </svg>
 );
 
-export default async function PublicLayout({ children }: { children: React.ReactNode }) {
-    const settings = await getHotelSettings();
-    const socialLinks = await getSocialLinks();
+interface PublicLayoutProps {
+    children: React.ReactNode;
+    settings: any;
+    socialLinks: any[];
+}
+
+export default function PublicLayout({
+    children,
+    settings = {},
+    socialLinks = []
+}: PublicLayoutProps) {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const renderSocialIcon = (platform: string) => {
         const p = platform.toLowerCase();
@@ -24,31 +34,41 @@ export default async function PublicLayout({ children }: { children: React.React
         return <span className="text-xs uppercase tracking-widest font-bold opacity-60">Icon</span>;
     };
 
+    const navLinks = [
+        { href: "/", label: "Home" },
+        { href: "/rooms", label: "Rooms" },
+        { href: "/gallery", label: "Gallery" },
+        { href: "/contact", label: "Contact" },
+    ];
+
+    const hotelName = settings?.hotelName || "Golfside Luxury Hotel";
+    const phoneNumber = settings?.phoneNumber || "";
+
     return (
-        <>
+        <div className="min-h-screen flex flex-col bg-background">
             {/* ─── Navigation ───────────────────────────────────────── */}
             <header className="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-lg border-b border-border transition-all duration-300 shadow-sm">
-                <div className="max-w-7xl mx-auto px-6 h-28 flex justify-between items-center text-foreground">
+                <div className="max-w-7xl mx-auto px-6 h-24 lg:h-28 flex justify-between items-center text-foreground">
                     <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
-                        {settings.logoUrl ? (
+                        {settings?.logoUrl && (
                             <Image
                                 src={settings.logoUrl.includes("res.cloudinary.com") ? settings.logoUrl.replace("/upload/", "/upload/f_auto,q_auto,h_80/") : settings.logoUrl}
-                                alt={settings.hotelName}
+                                alt={hotelName}
                                 width={48}
                                 height={48}
-                                className="h-12 w-auto object-contain"
+                                className="h-10 lg:h-12 w-auto object-contain"
                                 priority
                             />
-                        ) : null}
-                        <span className="font-serif text-2xl tracking-widest text-primary font-bold">
-                            {settings.hotelName}
+                        )}
+                        <span className="font-serif text-xl lg:text-2xl tracking-widest text-primary font-bold">
+                            {hotelName}
                         </span>
                     </Link>
+
                     <nav className="space-x-10 text-xs uppercase tracking-[0.2em] hidden md:flex items-center">
-                        <Link href="/" className="hover:text-primary transition-colors py-2">Home</Link>
-                        <Link href="/rooms" className="hover:text-primary transition-colors py-2">Rooms</Link>
-                        <Link href="/gallery" className="hover:text-primary transition-colors py-2">Gallery</Link>
-                        <Link href="/contact" className="hover:text-primary transition-colors py-2">Contact</Link>
+                        {navLinks.map(link => (
+                            <Link key={link.href} href={link.href} className="hover:text-primary transition-colors py-2 font-medium">{link.label}</Link>
+                        ))}
                         <Link
                             href="/booking"
                             className="bg-primary text-primary-foreground px-8 py-3.5 hover:bg-white hover:text-black hover:border-white transition-all duration-500 font-semibold tracking-[0.15em] border border-primary shadow-[0_4px_20px_-5px_hsl(var(--primary)/0.6)]"
@@ -58,68 +78,104 @@ export default async function PublicLayout({ children }: { children: React.React
                     </nav>
 
                     {/* Mobile Nav Toggle */}
-                    <button className="md:hidden text-primary p-2 focus:outline-none" aria-label="Open menu">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-7 h-7">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                        </svg>
+                    <button
+                        className="md:hidden text-primary p-2 focus:outline-none z-50"
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                    >
+                        {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>
+                </div>
+
+                {/* Mobile Menu Drawer */}
+                <div className={`fixed inset-0 bg-background/98 backdrop-blur-xl z-40 transition-all duration-500 md:hidden ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}>
+                    <div className="flex flex-col items-center justify-center h-full space-y-10 px-8 text-center pt-20">
+                        {navLinks.map(link => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setIsMenuOpen(false)}
+                                className="text-3xl font-serif text-foreground hover:text-primary transition-colors tracking-widest underline-offset-8"
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
+                        <Link
+                            href="/booking"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="bg-primary text-primary-foreground px-12 py-5 w-full hover:bg-white hover:text-black border border-primary transition-all duration-500 font-bold tracking-[0.2em] uppercase text-sm mt-4"
+                        >
+                            Book Now
+                        </Link>
+
+                        <div className="pt-10 border-t border-border/50 w-full flex flex-col items-center gap-6">
+                            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground font-bold">Connect With Us</p>
+                            <div className="flex gap-6">
+                                {socialLinks.map(link => (
+                                    <a key={link.id} href={link.url} target="_blank" className="text-primary hover:text-white transition-all hover:scale-110">
+                                        {renderSocialIcon(link.platform)}
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </header>
 
             {/* Page Content */}
-            <main className="flex-1 pt-28">{children}</main>
+            <main className="flex-1 pt-24 lg:pt-28 bg-background">{children}</main>
 
             {/* Floating Elements */}
-            <WhatsAppWidget phoneNumber={settings.phoneNumber} />
+            <WhatsAppWidget phoneNumber={phoneNumber} />
 
             {/* ─── Footer ────────────────────────────────────────────── */}
-            <footer className="bg-background border-t border-border mt-auto">
+            <footer className="bg-card border-t border-border mt-auto">
                 <div className="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-4 gap-12 lg:gap-20">
                     <div className="md:col-span-1 border-r border-border/20 pr-0 md:pr-12">
-                        {settings.logoUrl && (
+                        {settings?.logoUrl && (
                             <Image
                                 src={settings.logoUrl.includes("res.cloudinary.com") ? settings.logoUrl.replace("/upload/", "/upload/f_auto,q_auto,h_100/") : settings.logoUrl}
-                                alt={settings.hotelName}
+                                alt={hotelName}
                                 width={80}
                                 height={80}
                                 className="h-16 w-auto object-contain mb-6 grayscale hover:grayscale-0 transition-all duration-500"
                             />
                         )}
-                        <h4 className="font-serif text-2xl mb-4 text-primary">{settings.hotelName}</h4>
-                        <p className="text-muted-foreground text-sm leading-loose font-light italic">{settings.address}</p>
+                        <h4 className="font-serif text-2xl mb-4 text-primary">{hotelName}</h4>
+                        <p className="text-muted-foreground text-sm leading-loose font-light italic">{settings?.address}</p>
                     </div>
                     <div>
-                        <h4 className="font-serif text-lg mb-6 text-primary tracking-widest uppercase text-xs font-bold">Contact Info</h4>
+                        <h4 className="font-serif text-lg mb-6 text-primary tracking-widest uppercase text-[10px] font-bold">Contact Info</h4>
                         <div className="space-y-4">
                             <div className="flex items-center gap-3">
                                 <Phone size={16} className="text-primary/60" />
-                                <p className="text-muted-foreground text-sm font-light">{settings.phoneNumber}</p>
+                                <p className="text-muted-foreground text-sm font-light">{phoneNumber}</p>
                             </div>
                             <div className="flex items-center gap-3">
                                 <Mail size={16} className="text-primary/60" />
-                                <p className="text-muted-foreground text-sm font-light">{settings.email}</p>
+                                <p className="text-muted-foreground text-sm font-light">{settings?.email}</p>
                             </div>
                             <div className="flex items-start gap-3">
                                 <MapPin size={16} className="text-primary/60 shrink-0 mt-0.5" />
-                                <p className="text-muted-foreground text-sm leading-relaxed font-light">{settings.address}</p>
+                                <p className="text-muted-foreground text-sm leading-relaxed font-light">{settings?.address}</p>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <h4 className="font-serif text-lg mb-6 text-primary tracking-widest uppercase text-xs font-bold">Hotel Hours</h4>
+                        <h4 className="font-serif text-lg mb-6 text-primary tracking-widest uppercase text-[10px] font-bold">Hotel Hours</h4>
                         <div className="space-y-3">
                             <div>
                                 <p className="text-primary/60 text-[10px] uppercase tracking-widest font-bold mb-1">Check-In</p>
-                                <p className="text-muted-foreground text-sm font-light">{settings.checkInTime}</p>
+                                <p className="text-muted-foreground text-sm font-light">{settings?.checkInTime}</p>
                             </div>
                             <div>
                                 <p className="text-primary/60 text-[10px] uppercase tracking-widest font-bold mb-1">Check-Out</p>
-                                <p className="text-muted-foreground text-sm font-light">{settings.checkOutTime}</p>
+                                <p className="text-muted-foreground text-sm font-light">{settings?.checkOutTime}</p>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <h4 className="font-serif text-lg mb-6 text-primary tracking-widest uppercase text-xs font-bold">Social Media</h4>
+                        <h4 className="font-serif text-lg mb-6 text-primary tracking-widest uppercase text-[10px] font-bold">Social Media</h4>
                         <div className="flex flex-wrap gap-3">
                             {socialLinks.length > 0 ? (
                                 socialLinks.map((link) => (
@@ -128,7 +184,7 @@ export default async function PublicLayout({ children }: { children: React.React
                                         href={link.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="bg-card border border-border/50 hover:border-primary hover:text-primary transition-all p-4 rounded-xl shadow-sm text-foreground active:scale-95 group flex items-center justify-center"
+                                        className="bg-background border border-border/50 hover:border-primary hover:text-primary transition-all p-4 rounded-xl shadow-sm text-foreground active:scale-95 group flex items-center justify-center min-w-[50px] min-h-[50px]"
                                         title={link.platform}
                                     >
                                         {renderSocialIcon(link.platform)}
@@ -138,15 +194,12 @@ export default async function PublicLayout({ children }: { children: React.React
                                 <p className="text-muted-foreground text-xs font-light">Configure your social links in admin.</p>
                             )}
                         </div>
-                        <p className="mt-8 text-[11px] text-muted-foreground/60 uppercase tracking-[0.2em] leading-relaxed">
-                            Follow us for more <span className="text-primary/80 italic">Luxury Updates</span>
-                        </p>
                     </div>
                 </div>
                 <div className="border-t border-border/20 py-8 text-center text-muted-foreground text-[10px] uppercase tracking-[0.3em] font-light">
-                    &copy; {new Date().getFullYear()} {settings.hotelName}. <span className="opacity-40">Luxury Living in Asaba.</span>
+                    &copy; {new Date().getFullYear()} {hotelName}. <span className="opacity-40">Luxury Living in Asaba.</span>
                 </div>
             </footer>
-        </>
+        </div>
     );
 }
