@@ -86,3 +86,15 @@ export async function getSocialLinks() {
         return [];
     }
 }
+
+export async function getFeaturedTestimonials() {
+    try {
+        return await prisma.testimonial.findMany({
+            where: { isFeatured: true },
+            orderBy: { createdAt: "desc" },
+            take: 6,
+        });
+    } catch {
+        return [];
+    }
+}

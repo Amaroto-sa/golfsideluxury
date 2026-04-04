@@ -1,8 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getHotelSettings, getRoomCategories, getAmenities, getGalleryImages, getRulesAndPolicies } from "@/lib/data-fetchers";
+import { getHotelSettings, getRoomCategories, getAmenities, getGalleryImages, getRulesAndPolicies, getFeaturedTestimonials } from "@/lib/data-fetchers";
 import { Button } from "@/components/ui/button";
+import { Star, Quote } from "lucide-react";
 
 export const revalidate = 3600; // Revalidate every hour instead of force-dynamic for speed
 
@@ -21,6 +22,7 @@ export default async function HomePage() {
     const amenities = await getAmenities();
     const galleryImages = await getGalleryImages();
     const rules = await getRulesAndPolicies();
+    const testimonials = await getFeaturedTestimonials();
 
     const amenityIcons: Record<string, string> = {
         "Wi-Fi": "📶",
@@ -136,7 +138,7 @@ export default async function HomePage() {
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
                         {categories.length > 0
-                            ? categories.map((cat) => (
+                            ? categories.map((cat: any) => (
                                 <Link
                                     href={`/booking?category=${cat.id}`}
                                     key={cat.id}
@@ -209,7 +211,7 @@ export default async function HomePage() {
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
                         {amenities.length > 0
-                            ? amenities.map((a) => (
+                            ? amenities.map((a: any) => (
                                 <div key={a.id} className="flex flex-col items-center p-8 bg-background border border-border/60 hover:border-primary/50 transition-all duration-500 hover:shadow-[0_10px_30px_-10px_hsl(var(--primary)/0.2)] group">
                                     <span className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-500">{a.icon || amenityIcons[a.name] || "✦"}</span>
                                     <span className="text-xs uppercase tracking-widest font-medium text-muted-foreground group-hover:text-primary transition-colors">{a.name}</span>
@@ -242,7 +244,7 @@ export default async function HomePage() {
                             </h2>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                            {galleryImages.slice(0, 6).map((img) => (
+                            {galleryImages.slice(0, 6).map((img: any) => (
                                 <div key={img.id} className="aspect-[4/3] overflow-hidden border border-border/30 relative group shadow-lg">
                                     {img.url ? (
                                         <Image
@@ -272,8 +274,57 @@ export default async function HomePage() {
                 </section>
             )}
 
+            {/* ═══════════ TESTIMONIALS ═══════════ */}
+            {testimonials.length > 0 && (
+                <section className="py-32 bg-background overflow-hidden">
+                    <div className="max-w-7xl mx-auto px-6">
+                        <div className="text-center mb-20 flex flex-col items-center">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="h-px w-8 bg-primary" />
+                                <p className="text-primary tracking-[0.4em] uppercase text-xs font-semibold">Guest Experiences</p>
+                                <div className="h-px w-8 bg-primary" />
+                            </div>
+                            <h2 className="text-4xl md:text-6xl font-serif text-white">
+                                What Our <span className="text-primary italic">Guests Say</span>
+                            </h2>
+                        </div>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {testimonials.map((t: any) => (
+                                <div key={t.id} className="bg-card border border-border/50 p-10 rounded-2xl relative group hover:border-primary/30 transition-all duration-500 shadow-xl">
+                                    <Quote className="absolute top-6 right-8 w-12 h-12 text-primary/5 opacity-40 group-hover:text-primary/10 transition-colors" />
+                                    <div className="flex gap-1 mb-6">
+                                        {[...Array(5)].map((_, i) => (
+                                            <Star
+                                                key={i}
+                                                className={`w-4 h-4 ${i < (t.rating || 5) ? "fill-primary text-primary" : "text-zinc-800"}`}
+                                            />
+                                        ))}
+                                    </div>
+                                    <p className="text-muted-foreground leading-relaxed italic mb-8 font-light text-lg">
+                                        "{t.content}"
+                                    </p>
+                                    <div className="flex items-center gap-4 border-t border-border/20 pt-8">
+                                        <div className="w-14 h-14 rounded-full bg-primary/20 border-2 border-primary/10 flex items-center justify-center text-primary font-serif text-2xl overflow-hidden shrink-0">
+                                            {t.avatarUrl ? (
+                                                <img src={t.avatarUrl} alt={t.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                t.name[0]
+                                            )}
+                                        </div>
+                                        <div>
+                                            <h4 className="font-serif text-white text-lg">{t.name}</h4>
+                                            <p className="text-xs text-primary/60 uppercase tracking-widest font-bold">{t.role || "Guest"}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* ═══════════ RULES / POLICY ═══════════ */}
-            <section className="py-32 px-6 bg-background">
+            <section className="py-32 px-6 bg-card border-y border-border/30">
                 <div className="max-w-5xl mx-auto">
                     <div className="text-center mb-20 flex flex-col items-center">
                         <div className="flex items-center gap-4 mb-4">
@@ -286,29 +337,29 @@ export default async function HomePage() {
                         </h2>
                     </div>
                     <div className="grid md:grid-cols-2 gap-8">
-                        <div className="bg-card border border-border/50 p-10 hover:border-primary/30 transition-colors shadow-sm">
+                        <div className="bg-background border border-border/50 p-10 hover:border-primary/30 transition-colors shadow-sm">
                             <h3 className="font-serif text-2xl text-foreground mb-4">Booking Policy</h3>
                             <p className="text-muted-foreground leading-loose text-sm font-light">{settings.bookingPolicy}</p>
                         </div>
-                        <div className="bg-card border border-border/50 p-10 hover:border-primary/30 transition-colors shadow-sm">
+                        <div className="bg-background border border-border/50 p-10 hover:border-primary/30 transition-colors shadow-sm">
                             <h3 className="font-serif text-2xl text-foreground mb-4">Check-in / Check-out</h3>
                             <p className="text-muted-foreground text-sm mb-3 font-light"><strong className="font-medium text-foreground">Check-in:</strong> {settings.checkInTime}</p>
                             <p className="text-muted-foreground text-sm font-light"><strong className="font-medium text-foreground">Check-out:</strong> {settings.checkOutTime}</p>
                         </div>
                         {rules.length > 0
-                            ? rules.map((rule) => (
-                                <div key={rule.id} className="bg-card border border-border/50 p-10 hover:border-primary/30 transition-colors shadow-sm">
+                            ? rules.map((rule: any) => (
+                                <div key={rule.id} className="bg-background border border-border/50 p-10 hover:border-primary/30 transition-colors shadow-sm">
                                     <h3 className="font-serif text-2xl text-foreground mb-4">{rule.title}</h3>
                                     <p className="text-muted-foreground leading-loose text-sm font-light">{rule.content}</p>
                                 </div>
                             ))
                             : (
                                 <>
-                                    <div className="bg-card border border-border/50 p-10 hover:border-primary/30 transition-colors shadow-sm">
+                                    <div className="bg-background border border-border/50 p-10 hover:border-primary/30 transition-colors shadow-sm focus:border-primary">
                                         <h3 className="font-serif text-2xl text-foreground mb-4">No Smoking</h3>
                                         <p className="text-muted-foreground text-sm font-light leading-loose">Smoking is strictly prohibited inside all hotel rooms.</p>
                                     </div>
-                                    <div className="bg-card border border-border/50 p-10 hover:border-primary/30 transition-colors shadow-sm">
+                                    <div className="bg-background border border-border/50 p-10 hover:border-primary/30 transition-colors shadow-sm">
                                         <h3 className="font-serif text-2xl text-foreground mb-4">Occupancy</h3>
                                         <p className="text-muted-foreground text-sm font-light leading-loose">Only two adults are allowed in a room at any time.</p>
                                     </div>
@@ -319,7 +370,7 @@ export default async function HomePage() {
             </section>
 
             {/* ═══════════ CONTACT BLOCK ═══════════ */}
-            <section className="py-32 bg-card px-6 border-t border-border/40">
+            <section className="py-32 bg-background px-6">
                 <div className="max-w-4xl mx-auto text-center">
                     <p className="text-primary tracking-[0.5em] uppercase text-xs font-semibold mb-6">Get In Touch</p>
                     <h2 className="text-4xl md:text-6xl font-serif text-foreground mb-8">

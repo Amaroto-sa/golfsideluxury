@@ -175,3 +175,16 @@ model Notification {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  name        String   // Guest Name
+  role        String?  // e.g., "Business Traveler", "Couple"
+  content     String   @db.Text
+  rating      Int      @default(5)
+  avatarUrl   String?  // Cloudinary URL for guest photo
+  avatarPublicId String?
+  isFeatured  Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

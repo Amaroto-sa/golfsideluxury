@@ -48,6 +48,7 @@ export function AdminSidebar({ email, unreadCount, children }: AdminSidebarProps
         { href: "/admin/rooms", label: "Rooms", Icon: BedDouble },
         { href: "/admin/guests", label: "Guests", Icon: Users },
         { href: "/admin/inquiries", label: "Inquiries", Icon: MessageSquare },
+        { href: "/admin/testimonials", label: "Testimonials", Icon: MessageSquare },
         { href: "/admin/notifications", label: `Notifications${unreadCount > 0 ? ` (${unreadCount})` : ""}`, Icon: Bell },
     ];
 
@@ -79,8 +80,8 @@ export function AdminSidebar({ email, unreadCount, children }: AdminSidebarProps
                     return (
                         <Link key={item.href} href={item.href}>
                             <div className={`flex items-center gap-3 px-3 py-3 rounded-md text-sm transition-colors group ${isActive
-                                    ? "bg-primary/10 text-primary font-semibold"
-                                    : "hover:bg-accent/10 hover:text-primary text-muted-foreground"
+                                ? "bg-primary/10 text-primary font-semibold"
+                                : "hover:bg-accent/10 hover:text-primary text-muted-foreground"
                                 }`}>
                                 <item.Icon className={`w-5 h-5 ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`} />
                                 <span>{item.label}</span>
@@ -91,8 +92,8 @@ export function AdminSidebar({ email, unreadCount, children }: AdminSidebarProps
                 <div className="pt-4 mt-6 border-t border-border">
                     <Link href="/admin/settings">
                         <div className={`flex items-center gap-3 px-3 py-3 rounded-md text-sm transition-colors group ${pathname?.startsWith("/admin/settings")
-                                ? "bg-primary/10 text-primary font-semibold"
-                                : "hover:bg-accent/10 hover:text-primary text-muted-foreground"
+                            ? "bg-primary/10 text-primary font-semibold"
+                            : "hover:bg-accent/10 hover:text-primary text-muted-foreground"
                             }`}>
                             <Settings className={`w-5 h-5 ${pathname?.startsWith("/admin/settings") ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`} />
                             <span>Site Settings</span>
