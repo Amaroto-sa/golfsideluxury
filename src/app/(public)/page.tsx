@@ -4,7 +4,7 @@ import Image from "next/image";
 import { getHotelSettings, getRoomCategories, getAmenities, getGalleryImages, getRulesAndPolicies } from "@/lib/data-fetchers";
 import { Button } from "@/components/ui/button";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // Revalidate every hour instead of force-dynamic for speed
 
 /** Helper to get an optimized Cloudinary URL */
 function cldOpt(url: string | null | undefined, transforms: string): string | null {
