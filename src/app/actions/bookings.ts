@@ -91,16 +91,19 @@ export async function createBooking(formData: FormData) {
         linkUrl: `/admin/bookings`,
     });
 
-    // Send email notification (non-blocking)
+    // Send email notification (must be awaited on Vercel so the function doesn't freeze)
     const fullBookingData = await prisma.booking.findUnique({
         where: { id: booking.id },
         include: { guest: true, room: { include: { category: true } } }
     });
 
     if (fullBookingData) {
-        import("@/lib/email").then(({ sendBookingNotificationEmail }) => {
-            sendBookingNotificationEmail(fullBookingData).catch(console.error);
-        });
+        try {
+            const { sendBookingNotificationEmail } = await import("@/lib/email");
+            await sendBookingNotificationEmail(fullBookingData);
+        } catch (error) {
+            console.error("Failed to send email during booking creation:", error);
+        }
     }
 
     revalidatePath("/admin");
