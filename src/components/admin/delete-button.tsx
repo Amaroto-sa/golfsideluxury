@@ -6,7 +6,8 @@ import { Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface DeleteButtonProps {
-    onConfirm: () => void | Promise<void>;
+    onConfirm?: () => void | Promise<void>;
+    action?: () => void | Promise<void>; // Backward compatibility
     itemType?: string;
     title?: string;
     description?: string;
@@ -15,6 +16,7 @@ interface DeleteButtonProps {
 
 export function DeleteButton({
     onConfirm,
+    action,
     itemType = "item",
     title,
     description,
@@ -26,7 +28,11 @@ export function DeleteButton({
     const handleDelete = async () => {
         setIsPending(true);
         try {
-            await onConfirm();
+            if (onConfirm) {
+                await onConfirm();
+            } else if (action) {
+                await action();
+            }
         } finally {
             setIsPending(false);
             setOpen(false);
