@@ -31,6 +31,7 @@ export default async function SettingsPage() {
         logoUrl: null,
         faviconUrl: null,
         homepageHero: null,
+        emailNotificationTemplate: "<h2>New Booking Alert</h2>\n<p><strong>Guest:</strong> {{guestName}}</p>\n<p><strong>Room:</strong> {{roomInfo}}</p>\n<p><strong>Check-in:</strong> {{checkIn}}</p>\n<p><strong>Check-out:</strong> {{checkOut}}</p>\n<p><strong>Amount:</strong> {{totalAmount}}</p>\n<br/><p>Login to the admin dashboard to view details.</p>",
     };
 
     return (

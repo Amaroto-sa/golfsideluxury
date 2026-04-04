@@ -91,6 +91,18 @@ export async function createBooking(formData: FormData) {
         linkUrl: `/admin/bookings`,
     });
 
+    // Send email notification (non-blocking)
+    const fullBookingData = await prisma.booking.findUnique({
+        where: { id: booking.id },
+        include: { guest: true, room: { include: { category: true } } }
+    });
+
+    if (fullBookingData) {
+        import("@/lib/email").then(({ sendBookingNotificationEmail }) => {
+            sendBookingNotificationEmail(fullBookingData).catch(console.error);
+        });
+    }
+
     revalidatePath("/admin");
     revalidatePath("/admin/bookings");
 

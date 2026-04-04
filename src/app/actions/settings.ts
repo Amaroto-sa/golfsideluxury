@@ -15,6 +15,7 @@ export async function updateHotelSettings(formData: FormData) {
         checkOutTime: formData.get("checkOutTime") as string,
         aboutText: formData.get("aboutText") as string,
         bookingPolicy: formData.get("bookingPolicy") as string,
+        emailNotificationTemplate: formData.get("emailNotificationTemplate") as string,
     };
 
     const parsed = hotelSettingsSchema.safeParse(raw);

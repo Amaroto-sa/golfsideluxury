@@ -206,6 +206,11 @@ export function SettingsClient({
                             <Label>Booking Policy</Label>
                             <Textarea name="bookingPolicy" defaultValue={s?.bookingPolicy} rows={3} required />
                         </div>
+                        <div className="space-y-2 border-t border-border pt-4 mt-4">
+                            <Label>Email Notification Template</Label>
+                            <p className="text-xs text-muted-foreground mb-2">Available variables: {'{{guestName}}'}, {'{{roomInfo}}'}, {'{{checkIn}}'}, {'{{checkOut}}'}, {'{{totalAmount}}'}</p>
+                            <Textarea name="emailNotificationTemplate" defaultValue={s?.emailNotificationTemplate} rows={10} className="font-mono text-sm" />
+                        </div>
                         <Button type="submit">Save Hotel Settings</Button>
                     </form>
                 </CardContent>

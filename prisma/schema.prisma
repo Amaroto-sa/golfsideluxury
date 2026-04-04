@@ -33,6 +33,7 @@ model HotelSettings {
   bookingPolicy        String   @db.Text
   homepageHero         String?  // Cloudinary URL for hero image
   homepageHeroPublicId String?  // Cloudinary public_id
+  emailNotificationTemplate String? @db.Text // Customizable email template
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

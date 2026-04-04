@@ -16,6 +16,7 @@ export const hotelSettingsSchema = z.object({
     checkOutTime: z.string().min(1, "Check-out time is required"),
     aboutText: z.string().min(10, "About text must be at least 10 characters"),
     bookingPolicy: z.string().min(5, "Booking policy is required"),
+    emailNotificationTemplate: z.string().optional(),
 });
 
 // ─── Booking ─────────────────────────────────────────────────────
