@@ -27,12 +27,16 @@ export default async function RoomsPage() {
         <div className="py-16 px-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="text-center mb-16">
-                    <p className="text-primary tracking-[0.3em] uppercase text-sm font-medium mb-4">Our Collection</p>
-                    <h1 className="text-4xl md:text-5xl font-serif text-white mb-4">
-                        Room <span className="text-primary">Categories</span>
+                <div className="text-center mb-24 flex flex-col items-center">
+                    <div className="flex items-center gap-4 mb-4">
+                        <div className="h-px w-8 bg-primary" />
+                        <p className="text-primary tracking-[0.4em] uppercase text-xs font-semibold">Our Collection</p>
+                        <div className="h-px w-8 bg-primary" />
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-serif text-foreground mb-6">
+                        Room <span className="text-primary italic">Categories</span>
                     </h1>
-                    <p className="text-muted-foreground max-w-2xl mx-auto">
+                    <p className="text-muted-foreground/80 font-light max-w-2xl mx-auto text-lg leading-relaxed">
                         Each room is meticulously designed to provide the highest level of comfort and luxury.
                     </p>
                 </div>
@@ -50,51 +54,61 @@ export default async function RoomsPage() {
                                     className={`flex flex-col ${i % 2 === 1 ? "lg:flex-row-reverse" : "lg:flex-row"} gap-8 items-center`}
                                 >
                                     {/* Image */}
-                                    <div className="flex-1 w-full aspect-[16/10] rounded-lg border border-border overflow-hidden relative">
-                                        {coverUrl ? (
-                                            <Image
-                                                src={coverUrl}
-                                                alt={`${cat.name} room`}
-                                                fill
-                                                className="object-cover hover:scale-105 transition-transform duration-700"
-                                                sizes="(max-width: 1024px) 100vw, 50vw"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
-                                                <span className="text-muted-foreground">{cat.name} Room Image</span>
-                                            </div>
-                                        )}
+                                    <div className="flex-1 w-full relative group">
+                                        <div className={`absolute -inset-4 border border-primary/20 ${i % 2 === 1 ? "-translate-x-4" : "translate-x-4"} translate-y-4`} />
+                                        <div className="aspect-[16/10] overflow-hidden relative z-10 shadow-2xl bg-zinc-900">
+                                            {coverUrl ? (
+                                                <Image
+                                                    src={coverUrl}
+                                                    alt={`${cat.name} room`}
+                                                    fill
+                                                    className="object-cover group-hover:scale-105 transition-transform duration-[1.5s]"
+                                                    sizes="(max-width: 1024px) 100vw, 50vw"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
+                                                    <span className="text-muted-foreground uppercase tracking-widest text-xs">{cat.name}</span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
 
                                     {/* Details */}
-                                    <div className="flex-1 space-y-6">
-                                        <h2 className="text-3xl md:text-4xl font-serif text-primary">{cat.name}</h2>
-                                        <p className="text-3xl font-medium text-white">
+                                    <div className={`flex-1 space-y-8 ${i % 2 === 1 ? "pr-0 lg:pr-16" : "pl-0 lg:pl-16"}`}>
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-px w-10 bg-primary" />
+                                            <h2 className="text-4xl md:text-5xl font-serif text-foreground">{cat.name}</h2>
+                                        </div>
+                                        <p className="text-4xl font-light text-primary">
                                             ₦{Number(cat.price).toLocaleString()}
-                                            <span className="text-lg text-muted-foreground"> / night</span>
+                                            <span className="text-xs text-muted-foreground block mt-2 tracking-[0.2em] uppercase font-medium">per night</span>
                                         </p>
                                         {cat.description && (
-                                            <p className="text-muted-foreground leading-relaxed">{cat.description}</p>
+                                            <p className="text-muted-foreground leading-loose font-light text-lg">{cat.description}</p>
                                         )}
-                                        <div className="flex flex-wrap gap-4 text-sm">
-                                            <span className="bg-card border border-border px-4 py-2 rounded-md">
-                                                {cat._count?.rooms || cat.rooms?.length || 0} Total Rooms
+                                        <div className="flex flex-wrap gap-4 text-xs font-medium tracking-widest uppercase">
+                                            <span className="bg-card border border-border/50 px-5 py-3 shadow-sm">
+                                                {cat._count?.rooms || cat.rooms?.length || 0} Total
                                             </span>
-                                            <span className={`px-4 py-2 rounded-md border ${availableCount > 0
-                                                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                                                    : "bg-destructive/10 border-destructive/20 text-destructive"
+                                            <span className={`px-5 py-3 border shadow-sm ${availableCount > 0
+                                                ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-400"
+                                                : "bg-destructive/5 border-destructive/20 text-destructive"
                                                 }`}>
-                                                {availableCount} Available Now
+                                                {availableCount} Available
                                             </span>
                                         </div>
                                         {cat.rooms && cat.rooms.length > 0 && (
-                                            <div className="text-xs text-muted-foreground">
-                                                Rooms: {cat.rooms.map((r) => r.roomNumber).join(", ")}
+                                            <div className="text-xs text-muted-foreground font-light mb-8">
+                                                <strong className="font-medium text-foreground">Rooms:</strong> {cat.rooms.map((r) => r.roomNumber).join(", ")}
                                             </div>
                                         )}
-                                        <Link href={`/booking?category=${cat.id}`}>
-                                            <Button size="lg" className="mt-2">Book {cat.name} Room</Button>
-                                        </Link>
+                                        <div className="pt-4">
+                                            <Link href={`/booking?category=${cat.id}`}>
+                                                <Button size="lg" className="px-10 py-7 uppercase tracking-[0.2em] font-semibold text-sm">
+                                                    Book {cat.name}
+                                                </Button>
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             );

@@ -10,8 +10,8 @@ export default async function PublicLayout({ children }: { children: React.React
     return (
         <>
             {/* ─── Navigation ───────────────────────────────────────── */}
-            <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <header className="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-lg border-b border-border transition-all duration-300">
+                <div className="max-w-7xl mx-auto px-6 h-28 flex justify-between items-center">
                     <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
                         {settings.logoUrl ? (
                             <Image
@@ -27,14 +27,14 @@ export default async function PublicLayout({ children }: { children: React.React
                             {settings.hotelName}
                         </span>
                     </Link>
-                    <nav className="space-x-8 text-sm uppercase tracking-wider hidden md:flex items-center">
-                        <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-                        <Link href="/rooms" className="hover:text-primary transition-colors">Rooms</Link>
-                        <Link href="/gallery" className="hover:text-primary transition-colors">Gallery</Link>
-                        <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
+                    <nav className="space-x-10 text-xs uppercase tracking-[0.2em] hidden md:flex items-center">
+                        <Link href="/" className="hover:text-primary transition-colors py-2">Home</Link>
+                        <Link href="/rooms" className="hover:text-primary transition-colors py-2">Rooms</Link>
+                        <Link href="/gallery" className="hover:text-primary transition-colors py-2">Gallery</Link>
+                        <Link href="/contact" className="hover:text-primary transition-colors py-2">Contact</Link>
                         <Link
                             href="/booking"
-                            className="bg-primary text-primary-foreground px-5 py-2.5 rounded-md hover:bg-primary/90 transition-colors font-medium"
+                            className="bg-primary text-primary-foreground px-8 py-3.5 hover:bg-white hover:text-black hover:border-white transition-all duration-500 font-semibold tracking-[0.15em] border border-primary shadow-[0_0_15px_-3px_hsl(var(--primary)/0.4)]"
                         >
                             Book Now
                         </Link>
@@ -50,11 +50,11 @@ export default async function PublicLayout({ children }: { children: React.React
             </header>
 
             {/* Page Content */}
-            <main className="flex-1 pt-20">{children}</main>
+            <main className="flex-1 pt-28">{children}</main>
 
             {/* ─── Footer ────────────────────────────────────────────── */}
-            <footer className="bg-zinc-950 border-t border-border">
-                <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-4 gap-12">
+            <footer className="bg-background border-t border-border mt-auto">
+                <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-4 gap-12">
                     <div className="md:col-span-1">
                         {settings.logoUrl && (
                             <Image
