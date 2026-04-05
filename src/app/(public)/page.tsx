@@ -51,9 +51,8 @@ export default async function HomePage() {
                 ) : (
                     <div className="absolute inset-0 bg-background" />
                 )}
-                <div className="absolute inset-0 bg-black/30 mix-blend-multiply" />
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/30 via-transparent to-transparent opacity-80" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
+                <div className="absolute inset-0 bg-black/50" />
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background to-transparent" />
 
                 <div className="relative z-10 text-center max-w-5xl px-6">
                     <p className="text-primary tracking-[0.5em] uppercase text-xs md:text-sm mb-6 font-semibold">

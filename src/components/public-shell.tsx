@@ -69,7 +69,7 @@ export function PublicShell({
     return (
         <>
             {/* ─── Top Navigation Bar ───────────────────────────────── */}
-            <header className="fixed top-0 w-full z-40 bg-background/95 backdrop-blur-lg border-b border-border transition-all duration-300 shadow-sm">
+            <header className="fixed top-0 w-full z-40 bg-background/98 backdrop-blur-sm border-b border-border transition-all duration-300 shadow-sm">
                 <div className="max-w-7xl mx-auto px-6 h-24 lg:h-28 flex justify-between items-center text-foreground">
                     <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
                         {settings?.logoUrl && (
