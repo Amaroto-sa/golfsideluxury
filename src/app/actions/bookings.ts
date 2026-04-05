@@ -199,6 +199,12 @@ export async function updateBookingDetails(id: string, formData: FormData) {
     if (roomId) data.roomId = roomId === "unassigned" ? null : roomId;
 
     if (data.roomId) {
+        // Check if room is literally under maintenance
+        const targetRoom = await prisma.room.findUnique({ where: { id: data.roomId } });
+        if (targetRoom?.status === "MAINTENANCE") {
+            throw new Error("Cannot assign this room because it is currently under MAINTENANCE.");
+        }
+
         // check overlap logic if room is assigned
         const b = await prisma.booking.findUnique({ where: { id } });
         const start = data.checkIn || b?.checkIn;

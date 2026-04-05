@@ -8,6 +8,7 @@ import { DeleteButton } from "@/components/admin/delete-button";
 import { EditBookingDialog } from "@/components/admin/edit-booking-dialog";
 import { AddBookingDialog } from "@/components/admin/add-booking-dialog";
 import { BookingsExportButton } from "@/components/admin/bookings-export-button";
+import { ConfirmBookingButton } from "@/components/admin/confirm-booking-button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export const dynamic = "force-dynamic";
@@ -95,9 +96,12 @@ export default async function BookingsPage() {
                                             <div className="flex gap-1 flex-wrap">
                                                 {b.status === "PENDING" && (
                                                     <>
-                                                        <form action={async () => { "use server"; await updateBookingStatus(b.id, "CONFIRMED"); }}>
-                                                            <Button size="sm" variant="default" type="submit">Confirm</Button>
-                                                        </form>
+                                                        <ConfirmBookingButton
+                                                            booking={b}
+                                                            rooms={rooms}
+                                                            confirmAction={updateBookingStatus}
+                                                            assignAction={updateBookingDetails}
+                                                        />
                                                         <form action={async () => { "use server"; await updateBookingStatus(b.id, "CANCELLED"); }}>
                                                             <Button size="sm" variant="destructive" type="submit">Reject</Button>
                                                         </form>
