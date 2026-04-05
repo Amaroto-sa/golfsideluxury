@@ -1,28 +1,43 @@
 import React from "react";
 import prisma from "@/lib/prisma";
-import { updateBookingStatus, updatePaymentStatus } from "@/app/actions/bookings";
+import { updateBookingStatus, updatePaymentStatus, deleteBooking, createBooking } from "@/app/actions/bookings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DeleteButton } from "@/components/admin/delete-button";
+import { AddBookingDialog } from "@/components/admin/add-booking-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export const dynamic = "force-dynamic";
 
 export default async function BookingsPage() {
     let bookings: any[] = [];
+    let categories: any[] = [];
+    let rooms: any[] = [];
+
     try {
-        bookings = await prisma.booking.findMany({
-            orderBy: { createdAt: "desc" },
-            include: {
-                guest: true,
-                room: { include: { category: true } },
-            },
-        });
+        const [b, c, r] = await Promise.all([
+            prisma.booking.findMany({
+                orderBy: { createdAt: "desc" },
+                include: {
+                    guest: true,
+                    room: { include: { category: true } },
+                },
+            }),
+            prisma.roomCategory.findMany({ orderBy: { name: "asc" } }),
+            prisma.room.findMany({ include: { category: true }, orderBy: { roomNumber: "asc" } })
+        ]);
+        bookings = b;
+        categories = c;
+        rooms = r;
     } catch { }
 
     return (
         <div className="space-y-6">
-            <h2 className="text-2xl font-serif text-primary">Booking Management</h2>
+            <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-serif text-primary">Booking Management</h2>
+                <AddBookingDialog categories={categories} rooms={rooms} action={createBooking} />
+            </div>
 
             <Card>
                 <CardContent className="p-0">
@@ -93,6 +108,7 @@ export default async function BookingsPage() {
                                                         <Button size="sm" variant="outline" type="submit">Mark Paid</Button>
                                                     </form>
                                                 )}
+                                                <DeleteButton action={deleteBooking.bind(null, b.id)} itemType="Booking" />
                                             </div>
                                         </TableCell>
                                     </TableRow>

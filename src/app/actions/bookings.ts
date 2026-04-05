@@ -151,3 +151,16 @@ export async function updatePaymentStatus(bookingId: string, paymentStatus: stri
     });
     revalidatePath("/admin/bookings");
 }
+
+export async function deleteBooking(bookingId: string) {
+    const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+    if (booking?.roomId && booking.status === "CONFIRMED") {
+        await prisma.room.update({
+            where: { id: booking.roomId },
+            data: { status: "AVAILABLE" },
+        });
+    }
+    await prisma.booking.delete({ where: { id: bookingId } });
+    revalidatePath("/admin/bookings");
+    revalidatePath("/admin");
+}

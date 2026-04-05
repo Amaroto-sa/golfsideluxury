@@ -1,12 +1,13 @@
 import React from "react";
 import prisma from "@/lib/prisma";
-import { createGuest, deleteGuest } from "@/app/actions/guests";
+import { createGuest, deleteGuest, updateGuest } from "@/app/actions/guests";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { EditGuestDialog } from "@/components/admin/edit-guest-dialog";
 import { Mail, Phone, MessageCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -116,7 +117,10 @@ export default async function GuestsPage() {
                                             }
                                         </TableCell>
                                         <TableCell>
-                                            <DeleteButton action={deleteGuest.bind(null, g.id)} itemType="Guest" />
+                                            <div className="flex gap-2">
+                                                <EditGuestDialog guest={g} action={updateGuest} />
+                                                <DeleteButton action={deleteGuest.bind(null, g.id)} itemType="Guest" />
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))}

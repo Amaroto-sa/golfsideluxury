@@ -1,6 +1,6 @@
 import React from "react";
 import prisma from "@/lib/prisma";
-import { createRoomCategory, deleteRoomCategory, createRoom, updateRoom, deleteRoom } from "@/app/actions/rooms";
+import { createRoomCategory, deleteRoomCategory, updateRoomCategory, createRoom, updateRoom, deleteRoom } from "@/app/actions/rooms";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { RoomsClient } from "@/components/admin/rooms-client";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { EditRoomCategoryDialog } from "@/components/admin/edit-room-category-dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -79,7 +80,10 @@ export default async function RoomsPage() {
                                             )}
                                         </TableCell>
                                         <TableCell>
-                                            <DeleteButton action={deleteRoomCategory.bind(null, c.id)} itemType="Category" />
+                                            <div className="flex gap-2">
+                                                <EditRoomCategoryDialog category={c} action={updateRoomCategory} />
+                                                <DeleteButton action={deleteRoomCategory.bind(null, c.id)} itemType="Category" />
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))}
