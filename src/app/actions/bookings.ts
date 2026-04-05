@@ -51,7 +51,8 @@ export async function createBooking(formData: FormData) {
     }
 
     const totalAmount = Number(category.price);
-    const amountPaid = data.bookingType === "reservation" ? totalAmount / 2 : totalAmount;
+    // All new bookings originate as unpaid (amountPaid = 0) since there's no live payment gateway.
+    const amountPaid = 0;
 
     // Upsert guest
     let guest = await prisma.guest.findFirst({
@@ -77,7 +78,7 @@ export async function createBooking(formData: FormData) {
             checkOut: new Date(data.checkOut),
             adults: data.adults,
             status: "PENDING",
-            paymentStatus: data.bookingType === "reservation" ? "PARTIAL" : "PENDING",
+            paymentStatus: "PENDING",
             totalAmount,
             amountPaid,
         },
@@ -140,14 +141,34 @@ export async function updateBookingStatus(bookingId: string, status: string) {
         }
     }
 
+    // If cancelled, wipe the payment record since they obviously didn't pay (or it was refunded)
+    if (status === "CANCELLED") {
+        await prisma.booking.update({
+            where: { id: bookingId },
+            data: { amountPaid: 0, paymentStatus: "PENDING" },
+        });
+    }
+
     revalidatePath("/admin/bookings");
     revalidatePath("/admin");
 }
 
 export async function updatePaymentStatus(bookingId: string, paymentStatus: string) {
+    const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
+    if (!booking) return;
+
+    let amountPaid = booking.amountPaid;
+    if (paymentStatus === "COMPLETED") {
+        amountPaid = booking.totalAmount;
+    } else if (paymentStatus === "PARTIAL") {
+        amountPaid = new prisma.Decimal(Number(booking.totalAmount) / 2);
+    } else if (paymentStatus === "PENDING" || paymentStatus === "REFUNDED") {
+        amountPaid = new prisma.Decimal(0);
+    }
+
     await prisma.booking.update({
         where: { id: bookingId },
-        data: { paymentStatus: paymentStatus as any },
+        data: { paymentStatus: paymentStatus as any, amountPaid },
     });
     revalidatePath("/admin/bookings");
 }
