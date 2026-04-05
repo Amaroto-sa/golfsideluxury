@@ -18,11 +18,18 @@ export default async function GuestsPage() {
             orderBy: { createdAt: "desc" },
             include: {
                 bookings: {
+                    where: { status: { in: ["CONFIRMED", "COMPLETED"] } },
                     orderBy: { createdAt: "desc" },
                     take: 3,
                     include: { room: { include: { category: true } } },
                 },
-                _count: { select: { bookings: true } },
+                _count: {
+                    select: {
+                        bookings: {
+                            where: { status: { in: ["CONFIRMED", "COMPLETED"] } }
+                        }
+                    }
+                },
             },
         });
     } catch { }

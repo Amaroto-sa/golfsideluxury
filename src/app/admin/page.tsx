@@ -55,7 +55,10 @@ export default async function AdminDashboard() {
                 orderBy: { createdAt: "desc" },
                 include: { guest: true, room: { include: { category: true } } },
             }),
-            prisma.booking.aggregate({ _sum: { amountPaid: true } }),
+            prisma.booking.aggregate({
+                where: { status: { in: ["CONFIRMED", "COMPLETED"] } },
+                _sum: { amountPaid: true }
+            }),
             prisma.booking.count({
                 where: {
                     checkIn: {
