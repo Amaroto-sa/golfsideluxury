@@ -44,16 +44,16 @@ export default async function HomePage() {
                         src={heroUrl}
                         alt={`${settings.hotelName} Hero`}
                         fill
-                        className="object-cover"
+                        className="object-cover animate-in fade-in zoom-in duration-1000"
                         priority
                         sizes="100vw"
                     />
                 ) : (
-                    <div className="absolute inset-0 bg-zinc-900" />
+                    <div className="absolute inset-0 bg-background" />
                 )}
-                <div className="absolute inset-0 bg-black/40" />
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent opacity-60" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+                <div className="absolute inset-0 bg-black/30 mix-blend-multiply" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/30 via-transparent to-transparent opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
 
                 <div className="relative z-10 text-center max-w-5xl px-6">
                     <p className="text-primary tracking-[0.5em] uppercase text-xs md:text-sm mb-6 font-semibold">
@@ -144,7 +144,7 @@ export default async function HomePage() {
                                     key={cat.id}
                                     className="group cursor-pointer bg-background overflow-hidden hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] transition-all duration-700 pb-8 flex flex-col shadow-lg border border-transparent hover:border-primary/20"
                                 >
-                                    <div className="aspect-[4/3] bg-zinc-900 overflow-hidden relative">
+                                    <div className="aspect-[4/3] bg-background/80 overflow-hidden relative">
                                         {cat.coverImage ? (
                                             <Image
                                                 src={cldOpt(cat.coverImage, "f_auto,q_auto,w_800,h_600,c_fill") || cat.coverImage}
@@ -158,7 +158,7 @@ export default async function HomePage() {
                                                 <span className="text-muted-foreground text-xs uppercase tracking-widest">{cat.name}</span>
                                             </div>
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
                                     </div>
                                     <div className="px-8 pt-8 flex-1 flex flex-col">
                                         <div className="flex justify-between items-end mb-4">
@@ -296,7 +296,7 @@ export default async function HomePage() {
                                         {[...Array(5)].map((_, i) => (
                                             <Star
                                                 key={i}
-                                                className={`w-4 h-4 ${i < (t.rating || 5) ? "fill-primary text-primary" : "text-zinc-800"}`}
+                                                className={`w-4 h-4 ${i < (t.rating || 5) ? "fill-primary text-primary" : "text-primary/20"}`}
                                             />
                                         ))}
                                     </div>

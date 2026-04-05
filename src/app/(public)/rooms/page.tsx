@@ -56,7 +56,7 @@ export default async function RoomsPage() {
                                     {/* Image */}
                                     <div className="flex-1 w-full relative group">
                                         <div className={`absolute -inset-4 border border-primary/20 ${i % 2 === 1 ? "-translate-x-4" : "translate-x-4"} translate-y-4`} />
-                                        <div className="aspect-[16/10] overflow-hidden relative z-10 shadow-2xl bg-zinc-900">
+                                        <div className="aspect-[16/10] overflow-hidden relative z-10 shadow-2xl bg-background/80">
                                             {coverUrl ? (
                                                 <Image
                                                     src={coverUrl}
@@ -66,7 +66,7 @@ export default async function RoomsPage() {
                                                     sizes="(max-width: 1024px) 100vw, 50vw"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
+                                                <div className="w-full h-full bg-background/80 flex items-center justify-center">
                                                     <span className="text-muted-foreground uppercase tracking-widest text-xs">{cat.name}</span>
                                                 </div>
                                             )}

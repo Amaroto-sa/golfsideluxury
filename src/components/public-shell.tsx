@@ -120,11 +120,11 @@ export function PublicShell({
                 <div className="absolute inset-0 bg-black/80" onClick={closeMenu} aria-label="Close menu" />
 
                 {/* Solid nav panel */}
-                <div className={`absolute inset-0 bg-[#0a0a0a] flex flex-col transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
+                <div className={`absolute inset-0 bg-background flex flex-col transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
                     {/* Top bar inside overlay */}
-                    <div className="flex items-center justify-between px-6 h-24 border-b border-white/5 shrink-0">
+                    <div className="flex items-center justify-between px-6 h-24 border-b border-border shrink-0">
                         <span className="font-serif text-xl tracking-widest text-primary font-bold">{hotelName}</span>
-                        <button onClick={closeMenu} className="text-primary p-2 hover:text-white transition-colors" aria-label="Close menu">
+                        <button onClick={closeMenu} className="text-primary p-2 hover:text-foreground transition-colors" aria-label="Close menu">
                             <X size={28} />
                         </button>
                     </div>
@@ -136,7 +136,7 @@ export function PublicShell({
                                 key={link.href}
                                 href={link.href}
                                 onClick={closeMenu}
-                                className="text-3xl font-serif text-white/90 hover:text-primary transition-all duration-300 tracking-widest"
+                                className="text-3xl font-serif text-foreground hover:text-primary transition-all duration-300 tracking-widest"
                                 style={{ transitionDelay: isMenuOpen ? `${i * 80}ms` : "0ms" }}
                             >
                                 {link.label}

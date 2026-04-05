@@ -50,7 +50,7 @@ export default function ContactPage() {
             <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-16">
                     <p className="text-primary tracking-[0.3em] uppercase text-sm font-medium mb-4">Contact Us</p>
-                    <h1 className="text-4xl md:text-5xl font-serif text-white mb-4">
+                    <h1 className="text-4xl md:text-5xl font-serif text-foreground mb-4">
                         Get In <span className="text-primary">Touch</span>
                     </h1>
                     <p className="text-muted-foreground max-w-xl mx-auto">

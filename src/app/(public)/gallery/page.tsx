@@ -26,7 +26,7 @@ export default async function GalleryPage() {
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
                     <p className="text-primary tracking-[0.3em] uppercase text-sm font-medium mb-4">Visual Tour</p>
-                    <h1 className="text-4xl md:text-5xl font-serif text-white mb-4">
+                    <h1 className="text-4xl md:text-5xl font-serif text-foreground mb-4">
                         Our <span className="text-primary">Gallery</span>
                     </h1>
                     <p className="text-muted-foreground max-w-xl mx-auto">
@@ -54,7 +54,7 @@ export default async function GalleryPage() {
                                                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                             />
                                         ) : (
-                                            <div className="aspect-[4/3] bg-zinc-800 flex items-center justify-center">
+                                            <div className="aspect-[4/3] bg-background/80 flex items-center justify-center">
                                                 <span className="text-muted-foreground text-sm">{img.title || "Gallery Image"}</span>
                                             </div>
                                         )}

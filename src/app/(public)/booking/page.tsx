@@ -95,7 +95,7 @@ export default function BookingPage() {
             <div className="max-w-3xl mx-auto">
                 <div className="text-center mb-12">
                     <p className="text-primary tracking-[0.3em] uppercase text-sm font-medium mb-4">Reservation</p>
-                    <h1 className="text-4xl md:text-5xl font-serif text-white mb-4">
+                    <h1 className="text-4xl md:text-5xl font-serif text-foreground mb-4">
                         Book Your <span className="text-primary">Stay</span>
                     </h1>
                 </div>
@@ -205,8 +205,8 @@ export default function BookingPage() {
                                         type="button"
                                         onClick={() => setBookingType("full")}
                                         className={`p-4 border rounded-lg text-left transition-all ${bookingType === "full"
-                                                ? "border-primary bg-primary/10"
-                                                : "border-border hover:border-primary/30"
+                                            ? "border-primary bg-primary/10"
+                                            : "border-border hover:border-primary/30"
                                             }`}
                                     >
                                         <p className="font-medium mb-1">Full Booking</p>
@@ -219,8 +219,8 @@ export default function BookingPage() {
                                         type="button"
                                         onClick={() => setBookingType("reservation")}
                                         className={`p-4 border rounded-lg text-left transition-all ${bookingType === "reservation"
-                                                ? "border-primary bg-primary/10"
-                                                : "border-border hover:border-primary/30"
+                                            ? "border-primary bg-primary/10"
+                                            : "border-border hover:border-primary/30"
                                             }`}
                                     >
                                         <p className="font-medium mb-1">Reservation</p>
