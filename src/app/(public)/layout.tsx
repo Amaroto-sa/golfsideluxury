@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { WhatsAppWidget } from "@/components/whatsapp-widget";
@@ -26,6 +26,31 @@ export default function PublicLayout({
 }: PublicLayoutProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    const closeMenu = useCallback(() => setIsMenuOpen(false), []);
+
+    // Lock body scroll when menu is open
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [isMenuOpen]);
+
+    // Close on Escape key
+    useEffect(() => {
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === "Escape") closeMenu();
+        };
+        if (isMenuOpen) {
+            window.addEventListener("keydown", handleEsc);
+        }
+        return () => window.removeEventListener("keydown", handleEsc);
+    }, [isMenuOpen, closeMenu]);
+
     const renderSocialIcon = (platform: string) => {
         const p = platform.toLowerCase();
         if (p.includes("tiktok")) return <TikTokIcon />;
@@ -46,8 +71,8 @@ export default function PublicLayout({
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
-            {/* ─── Navigation ───────────────────────────────────────── */}
-            <header className="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-lg border-b border-border transition-all duration-300 shadow-sm">
+            {/* ─── Top Navigation Bar ───────────────────────────────── */}
+            <header className="fixed top-0 w-full z-40 bg-background/95 backdrop-blur-lg border-b border-border transition-all duration-300 shadow-sm">
                 <div className="max-w-7xl mx-auto px-6 h-24 lg:h-28 flex justify-between items-center text-foreground">
                     <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
                         {settings?.logoUrl && (
@@ -65,6 +90,7 @@ export default function PublicLayout({
                         </span>
                     </Link>
 
+                    {/* Desktop Nav */}
                     <nav className="space-x-10 text-xs uppercase tracking-[0.2em] hidden md:flex items-center">
                         {navLinks.map(link => (
                             <Link key={link.href} href={link.href} className="hover:text-primary transition-colors py-2 font-medium">{link.label}</Link>
@@ -77,56 +103,102 @@ export default function PublicLayout({
                         </Link>
                     </nav>
 
-                    {/* Mobile Nav Toggle */}
+                    {/* Mobile Hamburger Toggle — z-[9999] so it stays above the overlay */}
                     <button
-                        className="md:hidden text-primary p-2 focus:outline-none z-50"
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className="md:hidden text-primary p-2 focus:outline-none relative z-[9999]"
+                        onClick={() => setIsMenuOpen(prev => !prev)}
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
                     >
                         {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>
                 </div>
+            </header>
 
-                {/* Mobile Menu Drawer */}
-                <div className={`fixed inset-0 bg-background/98 backdrop-blur-xl z-40 transition-all duration-500 md:hidden ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}>
-                    <div className="flex flex-col items-center justify-center h-full space-y-10 px-8 text-center pt-20">
-                        {navLinks.map(link => (
+            {/* ─── MOBILE FULLSCREEN NAV OVERLAY ────────────────────── */}
+            {/* This is rendered as a SIBLING of header, not nested inside it, to avoid stacking context issues */}
+            <div
+                className={`fixed inset-0 z-[9990] md:hidden transition-opacity duration-300 ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+                aria-hidden={!isMenuOpen}
+            >
+                {/* Dark backdrop — tapping this closes menu */}
+                <div
+                    className="absolute inset-0 bg-black/80"
+                    onClick={closeMenu}
+                    aria-label="Close menu"
+                />
+
+                {/* Solid nav panel */}
+                <div
+                    className={`absolute inset-0 bg-[#0a0a0a] flex flex-col transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
+                >
+                    {/* Top bar inside overlay — matches header height */}
+                    <div className="flex items-center justify-between px-6 h-24 border-b border-white/5 shrink-0">
+                        <span className="font-serif text-xl tracking-widest text-primary font-bold">
+                            {hotelName}
+                        </span>
+                        <button
+                            onClick={closeMenu}
+                            className="text-primary p-2 hover:text-white transition-colors"
+                            aria-label="Close menu"
+                        >
+                            <X size={28} />
+                        </button>
+                    </div>
+
+                    {/* Nav Links */}
+                    <nav className="flex-1 flex flex-col items-center justify-center gap-8 px-8">
+                        {navLinks.map((link, i) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                onClick={() => setIsMenuOpen(false)}
-                                className="text-3xl font-serif text-foreground hover:text-primary transition-colors tracking-widest underline-offset-8"
+                                onClick={closeMenu}
+                                className="text-3xl font-serif text-white/90 hover:text-primary transition-all duration-300 tracking-widest"
+                                style={{ transitionDelay: isMenuOpen ? `${i * 80}ms` : "0ms" }}
                             >
                                 {link.label}
                             </Link>
                         ))}
+
+                        <div className="w-20 h-px bg-primary/30 my-2" />
+
                         <Link
                             href="/booking"
-                            onClick={() => setIsMenuOpen(false)}
-                            className="bg-primary text-primary-foreground px-12 py-5 w-full hover:bg-white hover:text-black border border-primary transition-all duration-500 font-bold tracking-[0.2em] uppercase text-sm mt-4"
+                            onClick={closeMenu}
+                            className="bg-primary text-black px-14 py-5 font-bold tracking-[0.2em] uppercase text-sm hover:bg-white transition-all duration-500 w-full max-w-xs text-center"
                         >
                             Book Now
                         </Link>
+                    </nav>
 
-                        <div className="pt-10 border-t border-border/50 w-full flex flex-col items-center gap-6">
-                            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground font-bold">Connect With Us</p>
+                    {/* Social links at bottom */}
+                    {socialLinks.length > 0 && (
+                        <div className="px-8 py-10 border-t border-white/5 flex flex-col items-center gap-5 shrink-0">
+                            <p className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-bold">Connect With Us</p>
                             <div className="flex gap-6">
                                 {socialLinks.map(link => (
-                                    <a key={link.id} href={link.url} target="_blank" className="text-primary hover:text-white transition-all hover:scale-110">
+                                    <a
+                                        key={link.id}
+                                        href={link.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-primary hover:text-white transition-all duration-300 hover:scale-125"
+                                    >
                                         {renderSocialIcon(link.platform)}
                                     </a>
                                 ))}
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
-            </header>
+            </div>
 
             {/* Page Content */}
             <main className="flex-1 pt-24 lg:pt-28 bg-background">{children}</main>
 
-            {/* Floating Elements */}
-            <WhatsAppWidget phoneNumber={phoneNumber} />
+            {/* Floating WhatsApp — hidden when mobile menu is open via z-index */}
+            <div className={isMenuOpen ? "hidden" : ""}>
+                <WhatsAppWidget phoneNumber={phoneNumber} />
+            </div>
 
             {/* ─── Footer ────────────────────────────────────────────── */}
             <footer className="bg-card border-t border-border mt-auto">
