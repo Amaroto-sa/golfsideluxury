@@ -157,13 +157,13 @@ export async function updatePaymentStatus(bookingId: string, paymentStatus: stri
     const booking = await prisma.booking.findUnique({ where: { id: bookingId } });
     if (!booking) return;
 
-    let amountPaid = booking.amountPaid;
+    let amountPaid: any = booking.amountPaid;
     if (paymentStatus === "COMPLETED") {
         amountPaid = booking.totalAmount;
     } else if (paymentStatus === "PARTIAL") {
-        amountPaid = new prisma.Decimal(Number(booking.totalAmount) / 2);
+        amountPaid = Number(booking.totalAmount) / 2;
     } else if (paymentStatus === "PENDING" || paymentStatus === "REFUNDED") {
-        amountPaid = new prisma.Decimal(0);
+        amountPaid = 0;
     }
 
     await prisma.booking.update({
