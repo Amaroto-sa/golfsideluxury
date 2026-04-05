@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { Mail, Phone, MessageCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -77,8 +78,29 @@ export default async function GuestsPage() {
                                 {guests.map((g) => (
                                     <TableRow key={g.id}>
                                         <TableCell className="font-medium">{g.firstName} {g.lastName}</TableCell>
-                                        <TableCell>{g.phoneNumber}</TableCell>
-                                        <TableCell>{g.email || "—"}</TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                <span>{g.phoneNumber}</span>
+                                                <a href={`tel:${g.phoneNumber.replace(/\D/g, '')}`} className="text-primary hover:text-primary/80" title="Call">
+                                                    <Phone className="w-4 h-4" />
+                                                </a>
+                                                <a href={`https://wa.me/${g.phoneNumber.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-green-500 hover:text-green-600" title="WhatsApp">
+                                                    <MessageCircle className="w-4 h-4" />
+                                                </a>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            {g.email ? (
+                                                <div className="flex items-center gap-2">
+                                                    <span>{g.email}</span>
+                                                    <a href={`mailto:${g.email}`} className="text-primary hover:text-primary/80" title="Email">
+                                                        <Mail className="w-4 h-4" />
+                                                    </a>
+                                                </div>
+                                            ) : (
+                                                <span className="text-muted-foreground">—</span>
+                                            )}
+                                        </TableCell>
                                         <TableCell>{g._count.bookings}</TableCell>
                                         <TableCell>
                                             {g.bookings.length > 0

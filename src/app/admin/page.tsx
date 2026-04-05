@@ -16,11 +16,19 @@ export default async function AdminDashboard() {
         totalRooms: 0,
         recentInquiries: 0,
         unreadNotifications: 0,
+        totalRevenue: 0,
+        checkInsToday: 0,
     };
 
     let recentBookings: any[] = [];
 
     try {
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+
+        const todayEnd = new Date();
+        todayEnd.setHours(23, 59, 59, 999);
+
         const [
             totalBookings,
             pendingReservations,
@@ -31,6 +39,8 @@ export default async function AdminDashboard() {
             recentInquiries,
             unreadNotifications,
             bookings,
+            revenueAggregate,
+            checkInsToday,
         ] = await Promise.all([
             prisma.booking.count(),
             prisma.booking.count({ where: { status: "PENDING" } }),
@@ -45,13 +55,24 @@ export default async function AdminDashboard() {
                 orderBy: { createdAt: "desc" },
                 include: { guest: true, room: { include: { category: true } } },
             }),
+            prisma.booking.aggregate({ _sum: { amountPaid: true } }),
+            prisma.booking.count({
+                where: {
+                    checkIn: {
+                        gte: todayStart,
+                        lte: todayEnd,
+                    },
+                },
+            }),
         ]);
 
-        stats = { totalBookings, pendingReservations, confirmedBookings, occupiedRooms, availableRooms, totalRooms, recentInquiries, unreadNotifications };
+        stats = { totalBookings, pendingReservations, confirmedBookings, occupiedRooms, availableRooms, totalRooms, recentInquiries, unreadNotifications, totalRevenue: Number(revenueAggregate._sum.amountPaid || 0), checkInsToday };
         recentBookings = bookings;
     } catch { }
 
     const statCards = [
+        { label: "Total Revenue", value: `₦${stats.totalRevenue.toLocaleString()}`, color: "text-emerald-400" },
+        { label: "Check-ins Today", value: stats.checkInsToday, color: "text-blue-400" },
         { label: "Total Bookings", value: stats.totalBookings, color: "text-white" },
         { label: "Pending", value: stats.pendingReservations, color: "text-amber-400" },
         { label: "Confirmed", value: stats.confirmedBookings, color: "text-emerald-400" },
@@ -65,7 +86,7 @@ export default async function AdminDashboard() {
             <h2 className="text-2xl font-serif text-primary">Dashboard Overview</h2>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {statCards.map((stat, i) => (
                     <Card key={i}>
                         <CardContent className="p-5">

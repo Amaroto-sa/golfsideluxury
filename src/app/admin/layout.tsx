@@ -28,7 +28,7 @@ export default async function AdminLayout({
     } catch { }
 
     return (
-        <AdminSidebar email={session.user?.email} unreadCount={unreadCount}>
+        <AdminSidebar email={session.user?.email} role={session.user?.role} unreadCount={unreadCount}>
             {children}
         </AdminSidebar>
     );

@@ -4,15 +4,16 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, CalendarDays, BedDouble, Users, MessageSquare, Bell, Settings, Menu, X } from "lucide-react";
+import { LayoutDashboard, CalendarDays, BedDouble, Users, MessageSquare, Bell, Settings, Menu, X, UserCog, UserCircle } from "lucide-react";
 
 type AdminSidebarProps = {
     email: string | null | undefined;
+    role?: string | null;
     unreadCount: number;
     children: React.ReactNode;
 };
 
-export function AdminSidebar({ email, unreadCount, children }: AdminSidebarProps) {
+export function AdminSidebar({ email, role, unreadCount, children }: AdminSidebarProps) {
     const pathname = usePathname();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -50,7 +51,12 @@ export function AdminSidebar({ email, unreadCount, children }: AdminSidebarProps
         { href: "/admin/inquiries", label: "Inquiries", Icon: MessageSquare },
         { href: "/admin/testimonials", label: "Testimonials", Icon: MessageSquare },
         { href: "/admin/notifications", label: `Notifications${unreadCount > 0 ? ` (${unreadCount})` : ""}`, Icon: Bell },
+        { href: "/admin/profile", label: "My Profile", Icon: UserCircle },
     ];
+
+    if (role === "SUPER_ADMIN") {
+        navItems.push({ href: "/admin/users", label: "Staff Users", Icon: UserCog });
+    }
 
     const sidebarContent = (
         <>
