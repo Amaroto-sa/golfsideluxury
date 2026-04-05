@@ -164,3 +164,44 @@ export async function deleteBooking(bookingId: string) {
     revalidatePath("/admin/bookings");
     revalidatePath("/admin");
 }
+
+export async function updateBookingDetails(id: string, formData: FormData) {
+    const checkIn = formData.get("checkIn") as string;
+    const checkOut = formData.get("checkOut") as string;
+    const adults = Number(formData.get("adults"));
+    const roomId = formData.get("roomId") as string;
+
+    const data: any = {};
+    if (checkIn) data.checkIn = new Date(checkIn);
+    if (checkOut) data.checkOut = new Date(checkOut);
+    if (adults) data.adults = adults;
+    if (roomId) data.roomId = roomId === "unassigned" ? null : roomId;
+
+    if (data.roomId) {
+        // check overlap logic if room is assigned
+        const b = await prisma.booking.findUnique({ where: { id } });
+        const start = data.checkIn || b?.checkIn;
+        const end = data.checkOut || b?.checkOut;
+
+        const clash = await prisma.booking.findFirst({
+            where: {
+                roomId: data.roomId,
+                id: { not: id },
+                status: { in: ["PENDING", "CONFIRMED"] },
+                OR: [
+                    { checkIn: { lte: end }, checkOut: { gte: start } },
+                ],
+            },
+        });
+
+        if (clash) {
+            throw new Error("Date clash on this specific room.");
+        }
+    }
+
+    await prisma.booking.update({
+        where: { id },
+        data,
+    });
+    revalidatePath("/admin/bookings");
+}

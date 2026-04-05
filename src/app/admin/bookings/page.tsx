@@ -1,11 +1,13 @@
 import React from "react";
 import prisma from "@/lib/prisma";
-import { updateBookingStatus, updatePaymentStatus, deleteBooking, createBooking } from "@/app/actions/bookings";
+import { updateBookingStatus, updatePaymentStatus, deleteBooking, createBooking, updateBookingDetails } from "@/app/actions/bookings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { EditBookingDialog } from "@/components/admin/edit-booking-dialog";
 import { AddBookingDialog } from "@/components/admin/add-booking-dialog";
+import { BookingsExportButton } from "@/components/admin/bookings-export-button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export const dynamic = "force-dynamic";
@@ -34,9 +36,12 @@ export default async function BookingsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center flex-wrap gap-4">
                 <h2 className="text-2xl font-serif text-primary">Booking Management</h2>
-                <AddBookingDialog categories={categories} rooms={rooms} action={createBooking} />
+                <div className="flex gap-2">
+                    <BookingsExportButton bookings={bookings} />
+                    <AddBookingDialog categories={categories} rooms={rooms} action={createBooking} />
+                </div>
             </div>
 
             <Card>
@@ -108,6 +113,7 @@ export default async function BookingsPage() {
                                                         <Button size="sm" variant="outline" type="submit">Mark Paid</Button>
                                                     </form>
                                                 )}
+                                                <EditBookingDialog booking={b} rooms={rooms} action={updateBookingDetails} />
                                                 <DeleteButton action={deleteBooking.bind(null, b.id)} itemType="Booking" />
                                             </div>
                                         </TableCell>

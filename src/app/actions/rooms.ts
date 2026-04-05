@@ -76,11 +76,19 @@ export async function createRoom(formData: FormData): Promise<void> {
 export async function updateRoom(id: string, formData: FormData): Promise<void> {
     const status = formData.get("status") as string;
     const categoryId = formData.get("categoryId") as string;
+    const roomNumber = formData.get("roomNumber") as string;
 
-    await prisma.room.update({
-        where: { id },
-        data: { status: status as any, categoryId },
-    });
+    const data: any = {};
+    if (status) data.status = status;
+    if (categoryId) data.categoryId = categoryId;
+    if (roomNumber) data.roomNumber = roomNumber;
+
+    if (Object.keys(data).length > 0) {
+        await prisma.room.update({
+            where: { id },
+            data,
+        });
+    }
     revalidatePath("/admin/rooms");
 }
 

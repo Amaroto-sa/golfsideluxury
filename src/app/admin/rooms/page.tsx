@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { RoomsClient } from "@/components/admin/rooms-client";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { EditRoomCategoryDialog } from "@/components/admin/edit-room-category-dialog";
+import { EditRoomDialog } from "@/components/admin/edit-room-dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -166,6 +167,7 @@ export default async function RoomsPage() {
                                                         <Button size="sm" variant="secondary" type="submit">Maintenance</Button>
                                                     </form>
                                                 )}
+                                                <EditRoomDialog room={r} categories={categories} action={updateRoom} />
                                                 <DeleteButton action={deleteRoom.bind(null, r.id)} itemType="Room" />
                                             </div>
                                         </TableCell>

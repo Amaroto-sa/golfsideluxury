@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DeleteButton } from "@/components/admin/delete-button";
-import { createAdmin, deleteAdmin } from "@/app/actions/admin-users";
+import { EditAdminDialog } from "@/components/admin/edit-admin-dialog";
+import { createAdmin, deleteAdmin, updateAdmin } from "@/app/actions/admin-users";
 
 export const dynamic = "force-dynamic";
 
@@ -91,7 +92,10 @@ export default async function AdminUsersPage() {
                                     <TableCell>{new Date(admin.createdAt).toLocaleDateString()}</TableCell>
                                     <TableCell>
                                         {session.user.id !== admin.id ? (
-                                            <DeleteButton action={deleteAdmin.bind(null, admin.id)} itemType="User" />
+                                            <div className="flex gap-2">
+                                                <EditAdminDialog admin={admin} action={updateAdmin} />
+                                                <DeleteButton action={deleteAdmin.bind(null, admin.id)} itemType="User" />
+                                            </div>
                                         ) : (
                                             <Badge variant="secondary">Current User</Badge>
                                         )}
